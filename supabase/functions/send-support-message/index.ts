@@ -20,7 +20,8 @@ interface SendMessageRequest {
   senderName?: string
 }
 
-const resend = new Resend(Deno.env.get('RESEND_API_KEY'))
+const resendApiKey = Deno.env.get('RESEND_API_KEY')
+const resend = resendApiKey ? new Resend(resendApiKey) : null
 const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID')
 const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN')
 const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER')
@@ -88,6 +89,24 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { contacts, message, senderName = 'Someone you care about' }: SendMessageRequest = await req.json()
+    
+    // Check if Twilio is configured
+    if (!twilioAccountSid || !twilioAuthToken || !twilioPhoneNumber) {
+      console.error('Missing Twilio configuration')
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: 'SMS service not configured. Please set up Twilio credentials.' 
+        }),
+        {
+          status: 500,
+          headers: { 
+            'Content-Type': 'application/json', 
+            ...corsHeaders 
+          },
+        }
+      )
+    }
     
     console.log('Sending support messages:', { 
       contactCount: contacts.length, 
