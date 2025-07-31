@@ -36,7 +36,7 @@ const Index = () => {
     if (!loading && !isAuthenticated) {
       navigate('/auth');
     }
-  }, [loading, isAuthenticated, navigate]);
+  }, [loading, isAuthenticated]);
 
   if (loading) {
     return (
