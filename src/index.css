@@ -2,41 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Connect Button Design System - Colors that feel like a warm embrace */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Warm, comforting background */
+    --background: 45 20% 98%;
+    --foreground: 220 15% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Card colors with warmth */
+    --card: 40 15% 97%;
+    --card-foreground: 220 15% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 15% 97%;
+    --popover-foreground: 220 15% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - warm amber to soft purple gradient */
+    --primary: 45 96% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 45 96% 65%;
+    
+    /* Secondary - calming blue */
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Muted warm tones */
+    --muted: 40 20% 92%;
+    --muted-foreground: 220 15% 45%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - hope green */
+    --accent: 159 64% 44%;
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Success - deeper hope green */
+    --success: 159 64% 36%;
+    --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive stays red but warmer */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs with warmth */
+    --border: 40 20% 88%;
+    --input: 40 20% 90%;
+    --ring: 45 96% 50%;
 
-    --radius: 0.5rem;
+    /* Gradients for the connect button */
+    --gradient-primary: linear-gradient(135deg, hsl(45 96% 50%), hsl(262 91% 70%));
+    --gradient-glow: linear-gradient(135deg, hsl(45 96% 65%), hsl(262 91% 75%));
+    
+    /* Breathing animation colors */
+    --button-rest: hsl(45 96% 50%);
+    --button-breathe: hsl(45 96% 60%);
+    
+    /* Shadows for warmth */
+    --shadow-warm: 0 10px 30px -10px hsl(45 96% 50% / 0.3);
+    --shadow-glow: 0 0 40px hsl(45 96% 65% / 0.4);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +126,85 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  /* Connect Button - The heart of the app */
+  .connect-button {
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-warm);
+    transition: var(--transition-smooth);
+    animation: breathe 4s ease-in-out infinite;
+  }
+  
+  .connect-button:hover {
+    background: var(--gradient-glow);
+    box-shadow: var(--shadow-glow);
+    transform: scale(1.02);
+  }
+  
+  .connect-button:active {
+    transform: scale(0.98);
+  }
+  
+  .connect-button.sending {
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  .connect-button.sent {
+    background: linear-gradient(135deg, hsl(159 64% 44%), hsl(159 64% 60%));
+    animation: none;
+  }
+  
+  /* Warm card styling */
+  .warm-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.1);
+  }
+  
+  /* Gentle input styling */
+  .warm-input {
+    background: hsl(var(--input));
+    border: 2px solid hsl(var(--border));
+    transition: var(--transition-smooth);
+  }
+  
+  .warm-input:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
   }
 }
