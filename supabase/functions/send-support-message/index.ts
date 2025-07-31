@@ -53,7 +53,15 @@ const sendSMS = async (to: string, message: string) => {
     body: body.toString()
   })
 
-  return response.json()
+  const result = await response.json()
+  console.log(`Twilio response status: ${response.status}`)
+  console.log(`Twilio response:`, JSON.stringify(result, null, 2))
+  
+  if (!response.ok) {
+    console.error(`Twilio API error: ${response.status} - ${result.message || 'Unknown error'}`)
+  }
+
+  return result
 }
 
 const sendEmail = async (to: string, name: string, message: string, senderName: string) => {
