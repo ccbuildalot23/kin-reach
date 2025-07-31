@@ -31,6 +31,24 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, loading, signOut, isAuthenticated } = useAuth();
 
+  // ALL HOOKS MUST BE DECLARED FIRST - BEFORE ANY CONDITIONAL LOGIC
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [supportNetwork, setSupportNetwork] = useState<SupportPerson[]>([]);
+  const [messageTemplate, setMessageTemplate] = useState('');
+  const [reachOutHistory, setReachOutHistory] = useState<ReachOutEvent[]>([]);
+  
+  // New UI state
+  const [selectedMode, setSelectedMode] = useState<any>('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [buttonState, setButtonState] = useState<ButtonState>('ready');
+  const [asmrActive, setAsmrActive] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [showContactManager, setShowContactManager] = useState(false);
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [newContact, setNewContact] = useState({ name: '', phoneNumber: '', relationship: '' });
+  const [countdown, setCountdown] = useState(0);
+
   // Redirect to auth if not authenticated
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -52,23 +70,6 @@ const Index = () => {
   if (!isAuthenticated) {
     return null; // Will redirect to auth
   }
-
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [supportNetwork, setSupportNetwork] = useState<SupportPerson[]>([]);
-  const [messageTemplate, setMessageTemplate] = useState('');
-  const [reachOutHistory, setReachOutHistory] = useState<ReachOutEvent[]>([]);
-  
-  // New UI state
-  const [selectedMode, setSelectedMode] = useState<any>('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [buttonState, setButtonState] = useState<ButtonState>('ready');
-  const [asmrActive, setAsmrActive] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [showContactManager, setShowContactManager] = useState(false);
-  const [showAddContact, setShowAddContact] = useState(false);
-  const [newContact, setNewContact] = useState({ name: '', phoneNumber: '', relationship: '' });
-  const [countdown, setCountdown] = useState(0);
 
   const supportModes = [
     {
