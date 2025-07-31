@@ -6,58 +6,58 @@
 
 @layer base {
   :root {
-    /* Warm, comforting background */
-    --background: 45 20% 98%;
-    --foreground: 220 15% 20%;
+    /* Calming, soft background */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
 
-    /* Card colors with warmth */
-    --card: 40 15% 97%;
-    --card-foreground: 220 15% 20%;
+    /* Gentle card colors */
+    --card: 210 15% 97%;
+    --card-foreground: 215 25% 27%;
 
-    --popover: 40 15% 97%;
-    --popover-foreground: 220 15% 20%;
+    --popover: 210 15% 97%;
+    --popover-foreground: 215 25% 27%;
 
-    /* Primary - warm amber to soft purple gradient */
-    --primary: 45 96% 50%;
+    /* Primary - soft teal to gentle lavender */
+    --primary: 180 25% 65%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 45 96% 65%;
+    --primary-glow: 180 35% 75%;
     
-    /* Secondary - calming blue */
-    --secondary: 217 91% 60%;
+    /* Secondary - calming sage green */
+    --secondary: 140 20% 70%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted warm tones */
-    --muted: 40 20% 92%;
-    --muted-foreground: 220 15% 45%;
+    /* Muted soft tones */
+    --muted: 210 15% 93%;
+    --muted-foreground: 215 15% 55%;
 
-    /* Accent - hope green */
-    --accent: 159 64% 44%;
+    /* Accent - gentle mint green */
+    --accent: 160 25% 65%;
     --accent-foreground: 0 0% 100%;
 
-    /* Success - deeper hope green */
-    --success: 159 64% 36%;
+    /* Success - soft emerald */
+    --success: 150 30% 60%;
     --success-foreground: 0 0% 100%;
 
-    /* Destructive stays red but warmer */
-    --destructive: 0 72% 51%;
+    /* Destructive - muted coral */
+    --destructive: 15 55% 70%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs with warmth */
-    --border: 40 20% 88%;
-    --input: 40 20% 90%;
-    --ring: 45 96% 50%;
+    /* Borders and inputs with softness */
+    --border: 210 15% 88%;
+    --input: 210 15% 92%;
+    --ring: 180 25% 65%;
 
-    /* Gradients for the connect button */
-    --gradient-primary: linear-gradient(135deg, hsl(45 96% 50%), hsl(262 91% 70%));
-    --gradient-glow: linear-gradient(135deg, hsl(45 96% 65%), hsl(262 91% 75%));
+    /* Gentle gradients for the connect button */
+    --gradient-primary: linear-gradient(135deg, hsl(180 25% 65%), hsl(260 25% 75%));
+    --gradient-glow: linear-gradient(135deg, hsl(180 35% 75%), hsl(260 35% 80%));
     
-    /* Breathing animation colors */
-    --button-rest: hsl(45 96% 50%);
-    --button-breathe: hsl(45 96% 60%);
+    /* Soft breathing animation colors */
+    --button-rest: hsl(180 25% 65%);
+    --button-breathe: hsl(180 35% 75%);
     
-    /* Shadows for warmth */
-    --shadow-warm: 0 10px 30px -10px hsl(45 96% 50% / 0.3);
-    --shadow-glow: 0 0 40px hsl(45 96% 65% / 0.4);
+    /* Gentle shadows */
+    --shadow-warm: 0 8px 25px -8px hsl(180 25% 65% / 0.25);
+    --shadow-glow: 0 0 30px hsl(180 35% 75% / 0.35);
     
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,41 +82,51 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Soft dark background */
+    --background: 215 25% 12%;
+    --foreground: 210 15% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Gentle dark cards */
+    --card: 215 20% 15%;
+    --card-foreground: 210 15% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 215 20% 15%;
+    --popover-foreground: 210 15% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Soft teal in dark mode */
+    --primary: 180 30% 70%;
+    --primary-foreground: 215 25% 15%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Muted sage in dark mode */
+    --secondary: 140 25% 45%;
+    --secondary-foreground: 210 15% 92%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Dark muted tones */
+    --muted: 215 15% 20%;
+    --muted-foreground: 215 10% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Gentle mint in dark mode */
+    --accent: 160 30% 55%;
+    --accent-foreground: 210 15% 92%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Soft destructive in dark mode */
+    --destructive: 15 45% 60%;
+    --destructive-foreground: 210 15% 92%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark borders */
+    --border: 215 15% 25%;
+    --input: 215 15% 22%;
+    --ring: 180 30% 70%;
+    
+    /* Update sidebar for consistency */
+    --sidebar-background: 215 20% 15%;
+    --sidebar-foreground: 210 15% 85%;
+    --sidebar-primary: 180 30% 65%;
+    --sidebar-primary-foreground: 215 25% 15%;
+    --sidebar-accent: 215 15% 25%;
+    --sidebar-accent-foreground: 210 15% 85%;
+    --sidebar-border: 215 15% 25%;
+    --sidebar-ring: 180 30% 70%;
   }
 }
 
@@ -154,7 +164,7 @@
   }
   
   .connect-button.sent {
-    background: linear-gradient(135deg, hsl(159 64% 44%), hsl(159 64% 60%));
+    background: linear-gradient(135deg, hsl(150 30% 60%), hsl(160 25% 65%));
     animation: none;
   }
   
