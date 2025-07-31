@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut } from 'lucide-react';
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SupportPerson {
   id: string;
@@ -26,6 +28,31 @@ interface ReachOutEvent {
 type ButtonState = 'ready' | 'sending' | 'sent';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, loading, signOut, isAuthenticated } = useAuth();
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [loading, isAuthenticated, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-8 h-8 text-primary animate-pulse mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading your safe space...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // Will redirect to auth
+  }
+
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [supportNetwork, setSupportNetwork] = useState<SupportPerson[]>([]);
@@ -317,7 +344,7 @@ const Index = () => {
       </div>
 
       <div className="max-w-md mx-auto relative z-10">
-        {/* Header with Dark Mode Toggle */}
+        {/* Header with Controls */}
         <div className="flex justify-between items-start mb-6 pt-8">
           <div className="flex-1">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
@@ -325,12 +352,21 @@ const Index = () => {
             </h1>
             <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} text-lg`}>Take a deep breath. We're here for you.</p>
           </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
-          >
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
+            >
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={signOut}
+              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-gray-400 hover:text-red-400' : 'bg-white text-gray-700 hover:text-red-600'} shadow-md transition-colors`}
+              title="Sign out"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Emergency Button */}
