@@ -5,6 +5,7 @@ import { ConnectButton } from "@/components/ConnectButton";
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SupportPerson {
   id: string;
@@ -95,25 +96,36 @@ const Index = () => {
   };
 
   const handleReachOut = async (contacts: SupportPerson[], message: string) => {
-    // In a real app, this would send actual SMS messages
-    // For demo purposes, we'll simulate the functionality
-    
-    console.log('Sending message to contacts:', {
-      contacts: contacts.map(c => ({ name: c.name, phone: c.phoneNumber })),
-      message: message
-    });
+    try {
+      // Call the Supabase edge function to send actual messages
+      const { data, error } = await supabase.functions.invoke('send-support-message', {
+        body: {
+          contacts: contacts,
+          message: message,
+          senderName: 'Someone who needs support' // You could make this customizable
+        }
+      });
 
-    // Record this reach-out event
-    const newEvent: ReachOutEvent = {
-      timestamp: new Date(),
-      contactsNotified: contacts.map(c => c.name),
-      message: message
-    };
+      if (error) {
+        console.error('Error sending messages:', error);
+        throw error;
+      }
 
-    setReachOutHistory(prev => [newEvent, ...prev].slice(0, 10)); // Keep last 10 events
+      console.log('Messages sent successfully:', data);
 
-    // In a real implementation, you would use something like:
-    // await SMS.sendSMSAsync(contacts.map(c => c.phoneNumber), message);
+      // Record this reach-out event
+      const newEvent: ReachOutEvent = {
+        timestamp: new Date(),
+        contactsNotified: contacts.map(c => c.name),
+        message: message
+      };
+
+      setReachOutHistory(prev => [newEvent, ...prev].slice(0, 10)); // Keep last 10 events
+
+    } catch (error) {
+      console.error('Failed to send support messages:', error);
+      throw error;
+    }
   };
 
   const getEncouragingMessage = () => {

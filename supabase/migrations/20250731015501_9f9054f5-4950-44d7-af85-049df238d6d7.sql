@@ -1,0 +1,1 @@
+-- Enable the project for edge functions (no tables needed for this feature)
