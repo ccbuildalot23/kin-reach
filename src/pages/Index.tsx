@@ -49,69 +49,13 @@ const Index = () => {
   const [newContact, setNewContact] = useState({ name: '', phoneNumber: '', relationship: '' });
   const [countdown, setCountdown] = useState(0);
 
+  // ALL useEffect hooks MUST also be called before any conditional returns
   // Redirect to auth if not authenticated
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate('/auth');
     }
   }, [loading, isAuthenticated]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 flex items-center justify-center">
-        <div className="text-center">
-          <Heart className="w-8 h-8 text-primary animate-pulse mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading your safe space...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null; // Will redirect to auth
-  }
-
-  const supportModes = [
-    {
-      id: 'comfort',
-      label: 'Need Comfort',
-      icon: Heart,
-      gradient: 'from-teal-400 to-blue-500',
-      message: 'I could use some comfort and understanding right now',
-      encouragement: 'It takes courage to reach out. You deserve support.'
-    },
-    {
-      id: 'listen',
-      label: 'Someone to Listen',
-      icon: Feather,
-      gradient: 'from-blue-400 to-cyan-500',
-      message: 'I need someone to listen without judgment',
-      encouragement: 'Your feelings are valid. Let someone be there for you.'
-    },
-    {
-      id: 'guidance',
-      label: 'Gentle Guidance',
-      icon: Sun,
-      gradient: 'from-emerald-400 to-teal-500',
-      message: 'I could use some gentle guidance',
-      encouragement: 'Asking for help is a sign of strength, not weakness.'
-    },
-    {
-      id: 'presence',
-      label: 'Just Be With Me',
-      icon: Sparkles,
-      gradient: 'from-cyan-400 to-blue-600',
-      message: 'I just need to know someone cares',
-      encouragement: 'You matter. Your presence in this world matters.'
-    }
-  ];
-
-  const asmrSounds = [
-    { id: 'rain', label: 'Gentle Rain', icon: '🌧️' },
-    { id: 'waves', label: 'Ocean Waves', icon: '🌊' },
-    { id: 'breathing', label: 'Calm Breathing', icon: '🫧' },
-    { id: 'heartbeat', label: 'Heartbeat', icon: '💗' }
-  ];
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -195,6 +139,65 @@ const Index = () => {
       setSelectedMode('');
     }
   }, [buttonState, countdown]);
+
+  // NOW we can have conditional renders after all hooks are declared
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-8 h-8 text-primary animate-pulse mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading your safe space...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // Will redirect to auth
+  }
+
+  // Define constants after conditional returns are resolved
+  const supportModes = [
+    {
+      id: 'comfort',
+      label: 'Need Comfort',
+      icon: Heart,
+      gradient: 'from-teal-400 to-blue-500',
+      message: 'I could use some comfort and understanding right now',
+      encouragement: 'It takes courage to reach out. You deserve support.'
+    },
+    {
+      id: 'listen',
+      label: 'Someone to Listen',
+      icon: Feather,
+      gradient: 'from-blue-400 to-cyan-500',
+      message: 'I need someone to listen without judgment',
+      encouragement: 'Your feelings are valid. Let someone be there for you.'
+    },
+    {
+      id: 'guidance',
+      label: 'Gentle Guidance',
+      icon: Sun,
+      gradient: 'from-emerald-400 to-teal-500',
+      message: 'I could use some gentle guidance',
+      encouragement: 'Asking for help is a sign of strength, not weakness.'
+    },
+    {
+      id: 'presence',
+      label: 'Just Be With Me',
+      icon: Sparkles,
+      gradient: 'from-cyan-400 to-blue-600',
+      message: 'I just need to know someone cares',
+      encouragement: 'You matter. Your presence in this world matters.'
+    }
+  ];
+
+  const asmrSounds = [
+    { id: 'rain', label: 'Gentle Rain', icon: '🌧️' },
+    { id: 'waves', label: 'Ocean Waves', icon: '🌊' },
+    { id: 'breathing', label: 'Calm Breathing', icon: '🫧' },
+    { id: 'heartbeat', label: 'Heartbeat', icon: '💗' }
+  ];
 
   const handleOnboardingComplete = (network: SupportPerson[], message: string) => {
     setSupportNetwork(network);
