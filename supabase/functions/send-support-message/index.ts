@@ -29,9 +29,18 @@ const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER')
 const sendSMS = async (to: string, message: string) => {
   const url = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`
   
+  // Format phone number to E.164 format for Twilio
+  let formattedTo = to.replace(/\D/g, '') // Remove all non-digits
+  if (!formattedTo.startsWith('1') && formattedTo.length === 10) {
+    formattedTo = '1' + formattedTo // Add US country code if missing
+  }
+  formattedTo = '+' + formattedTo // Add + prefix
+  
+  console.log(`Formatting phone ${to} to ${formattedTo}`)
+  
   const body = new URLSearchParams({
     'From': twilioPhoneNumber!,
-    'To': to,
+    'To': formattedTo,
     'Body': message
   })
 
