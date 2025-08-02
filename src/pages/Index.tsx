@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut } from 'lucide-react';
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
+import { SMSTest } from "@/components/SMSTest";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -606,6 +607,13 @@ const Index = () => {
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* SMS Test Section - for development/testing */}
+        {user && (
+          <div className="mt-8">
+            <SMSTest />
           </div>
         )}
 
