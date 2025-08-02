@@ -5,13 +5,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useSMS, formatPhoneNumber, validatePhoneNumber, getSMSStatus } from '@/lib/sms';
+import { ValidatedPhoneInput } from '@/components/PhoneInput';
+import { useSMS, getSMSStatus } from '@/lib/sms';
+import { validatePhoneNumber, formatPhoneForSMS } from '@/lib/phoneUtils';
 import { toast } from 'sonner';
 import { Phone, MessageSquare, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 export function SMSTest() {
   const { send, isSending, lastResult, isTestMode, isApproved } = useSMS();
   const [testPhone, setTestPhone] = useState('');
+  const [phoneValid, setPhoneValid] = useState(false);
   const [testMessage, setTestMessage] = useState('Test message from your Recovery App! 🎉');
   const [userId, setUserId] = useState('test-user-id');
 
@@ -23,8 +26,8 @@ export function SMSTest() {
       return;
     }
     
-    if (!validatePhoneNumber(testPhone)) {
-      toast.error('Please enter a valid US phone number');
+    if (!phoneValid) {
+      toast.error('Please enter a valid phone number');
       return;
     }
     
@@ -33,8 +36,8 @@ export function SMSTest() {
       return;
     }
     
-    const formattedPhone = formatPhoneNumber(testPhone);
-    const result = await send(formattedPhone, testMessage, userId);
+    const smsFormat = formatPhoneForSMS(testPhone);
+    const result = await send(smsFormat, testMessage, userId);
     
     if (result.success) {
       if (result.mock) {
@@ -77,19 +80,16 @@ export function SMSTest() {
             </Alert>
           )}
 
-          <div>
-            <label className="text-sm font-medium">Phone Number</label>
-            <Input
-              type="tel"
-              placeholder="+1234567890"
-              value={testPhone}
-              onChange={(e) => setTestPhone(e.target.value)}
-              className="mt-1"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              US phone numbers only (10 digits)
-            </p>
-          </div>
+          <ValidatedPhoneInput
+            value={testPhone}
+            onChange={(value, isValid) => {
+              setTestPhone(value);
+              setPhoneValid(isValid);
+            }}
+            label="Phone Number"
+            required={true}
+            className="mt-1"
+          />
           
           <div>
             <label className="text-sm font-medium">Test User ID</label>
