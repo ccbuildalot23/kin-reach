@@ -5704,6 +5704,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      check_data_retention_compliance: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       check_sms_rate_limit: {
         Args: {
           user_uuid: string
@@ -5802,6 +5806,10 @@ export type Database = {
       }
       log_security_violation: {
         Args: { violation_type: string; details?: Json }
+        Returns: undefined
+      }
+      log_sensitive_data_access: {
+        Args: { table_name: string; operation_type: string; record_id?: string }
         Returns: undefined
       }
       notify_partner: {
