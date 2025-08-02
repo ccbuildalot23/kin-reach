@@ -124,10 +124,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
                 key={notification.id}
                 notification={notification}
                 onMarkAsRead={handleMarkAsRead}
-                onClick={() => {
-                  handleMarkAsRead(notification.id);
-                  onClose?.();
-                }}
+                onClick={() => onClose?.()}
               />
             ))}
 
