@@ -4420,6 +4420,33 @@ export type Database = {
         }
         Relationships: []
       }
+      registration_rate_limits: {
+        Row: {
+          created_at: string
+          email_domain: string
+          id: string
+          ip_address: unknown
+          registration_count: number
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          email_domain: string
+          id?: string
+          ip_address: unknown
+          registration_count?: number
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          email_domain?: string
+          id?: string
+          ip_address?: unknown
+          registration_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       regulatory_notifications: {
         Row: {
           confirmation_received: boolean | null
@@ -5708,6 +5735,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      check_registration_rate_limit: {
+        Args: { client_ip: unknown; email_address: string }
+        Returns: boolean
+      }
       check_sms_rate_limit: {
         Args: {
           user_uuid: string
@@ -5732,6 +5763,14 @@ export type Database = {
       cleanup_old_typing_indicators: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      cleanup_security_data: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      create_security_session: {
+        Args: { session_data?: Json }
+        Returns: string
       }
       generate_daily_insights: {
         Args: Record<PropertyKey, never> | { user_uuid: string }
@@ -5779,6 +5818,10 @@ export type Database = {
       }
       get_recovery_streak: {
         Args: { user_uuid: string }
+        Returns: Json
+      }
+      get_security_dashboard: {
+        Args: Record<PropertyKey, never>
         Returns: Json
       }
       has_role: {
