@@ -390,10 +390,19 @@ const Index = () => {
         {/* Contact Manager Button */}
         <button
           onClick={() => setShowContactManager(true)}
-          className={`w-full mb-6 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
+          className={`w-full mb-3 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
         >
           <Plus className="w-5 h-5 mr-2" />
           Manage Support Contacts
+        </button>
+
+        {/* SMS Test Button */}
+        <button
+          onClick={() => navigate('/sms-test')}
+          className={`w-full mb-6 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
+        >
+          <MessageCircle className="w-5 h-5 mr-2" />
+          SMS Testing & Management
         </button>
 
         {/* ASMR Controls */}
