@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from 'react';
+import { formatPhoneForSMS, validatePhoneNumber as validatePhoneUtil } from './phoneUtils';
 
 // Configuration - change to true when A2P is approved
 const IS_SMS_APPROVED = false;
@@ -8,12 +9,19 @@ const SMS_TEST_MODE = true; // Set to false in production
 // Main SMS function with mock mode support
 export async function sendSMS(phoneNumber: string, message: string, userId?: string) {
   try {
-    // Log the SMS attempt
-    console.log(`📱 SMS Request: ${phoneNumber} - ${message.substring(0, 50)}...`);
+    // Validate and format phone number
+    const validation = validatePhoneUtil(phoneNumber);
+    if (!validation.isValid) {
+      console.error(`❌ Invalid phone number: ${validation.error}`);
+      return { success: false, error: `Invalid phone number: ${validation.error}` };
+    }
+
+    const formattedPhone = formatPhoneForSMS(phoneNumber);
+    console.log(`📱 SMS Request: ${formattedPhone} - ${message.substring(0, 50)}...`);
 
     if (!IS_SMS_APPROVED && SMS_TEST_MODE) {
       // Mock mode - simulate successful send
-      console.log(`🧪 MOCK SMS sent to ${phoneNumber}: ${message}`);
+      console.log(`🧪 MOCK SMS sent to ${formattedPhone}: ${message}`);
       
       // Log to notification queue for tracking
       if (userId) {
@@ -23,7 +31,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
             user_id: userId,
             channel: 'sms',
             body: message,
-            recipient_address: phoneNumber,
+            recipient_address: formattedPhone,
             status: 'mock_sent',
             scheduled_for: new Date().toISOString(),
             sent_at: new Date().toISOString()
@@ -36,7 +44,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
     // Real SMS sending (when A2P is approved)
     const { data, error } = await supabase.functions.invoke('send-sms', {
       body: {
-        to: phoneNumber,
+        to: formattedPhone,
         message: message
       }
     });
@@ -57,7 +65,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
             user_id: userId,
             channel: 'sms',
             body: message,
-            recipient_address: phoneNumber,
+            recipient_address: formattedPhone,
             status: 'sent',
             scheduled_for: new Date().toISOString(),
             sent_at: new Date().toISOString()
@@ -177,7 +185,7 @@ export async function sendNotificationSMS(
       .single();
 
     // Check if user has SMS enabled for this notification type
-    const smsChannels = prefs?.system_channels as any || {};
+    const smsChannels = (prefs?.system_channels as Record<string, boolean>) || {};
     if (!smsChannels.sms) {
       console.log('📵 SMS notifications disabled for user');
       return { success: false, reason: 'SMS disabled' };
@@ -272,9 +280,8 @@ export function useSMS() {
   };
 }
 
-// Utility functions
+// Phone number utilities (deprecated - use phoneUtils.ts instead)
 export function formatPhoneNumber(phone: string): string {
-  // Basic phone number formatting
   const cleaned = phone.replace(/\D/g, '');
   if (cleaned.length === 10) {
     return `+1${cleaned}`;
