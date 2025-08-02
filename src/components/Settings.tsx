@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { SMSIntegration } from "@/components/SMSIntegration";
 import { ArrowLeft, Plus, X, Edit2, TestTube2, Heart, MessageSquare } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 interface SupportPerson {
   id: string;
@@ -153,16 +154,19 @@ export const Settings = ({
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center space-x-4">
-          <Button
-            onClick={onBack}
-            variant="ghost"
-            size="sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+        <div className="flex items-center justify-between space-x-4">
+          <div className="flex items-center space-x-4">
+            <Button
+              onClick={onBack}
+              variant="ghost"
+              size="sm"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+          </div>
+          <NotificationBell />
         </div>
 
         {/* My Support Network */}
