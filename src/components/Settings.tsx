@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Plus, X, Edit2, TestTube2, Heart } from "lucide-react";
+import { SMSIntegration } from "@/components/SMSIntegration";
+import { ArrowLeft, Plus, X, Edit2, TestTube2, Heart, MessageSquare } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SupportPerson {
@@ -19,6 +20,7 @@ interface SupportPerson {
 interface SettingsProps {
   supportNetwork: SupportPerson[];
   messageTemplate: string;
+  userId: string;
   onUpdateNetwork: (network: SupportPerson[]) => void;
   onUpdateMessage: (message: string) => void;
   onBack: () => void;
@@ -27,6 +29,7 @@ interface SettingsProps {
 export const Settings = ({ 
   supportNetwork, 
   messageTemplate, 
+  userId,
   onUpdateNetwork, 
   onUpdateMessage, 
   onBack 
@@ -347,6 +350,22 @@ export const Settings = ({
                 </div>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* SMS Integration */}
+        <Card className="warm-card">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <MessageSquare className="w-5 h-5 text-accent" />
+              <span>SMS Integration</span>
+            </CardTitle>
+            <CardDescription>
+              Manage your SMS notifications and emergency contact settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SMSIntegration userId={userId} />
           </CardContent>
         </Card>
 

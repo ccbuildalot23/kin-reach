@@ -335,6 +335,7 @@ const Index = () => {
       <Settings
         supportNetwork={supportNetwork}
         messageTemplate={messageTemplate}
+        userId={user?.id || ''}
         onUpdateNetwork={setSupportNetwork}
         onUpdateMessage={setMessageTemplate}
         onBack={() => setShowSettings(false)}
