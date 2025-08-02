@@ -4628,6 +4628,33 @@ export type Database = {
           },
         ]
       }
+      sms_rate_limits: {
+        Row: {
+          created_at: string
+          id: string
+          operation_count: number
+          operation_type: string
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          operation_count?: number
+          operation_type: string
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          operation_count?: number
+          operation_type?: string
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       sponsor_matches: {
         Row: {
           contact_initiated_at: string | null
@@ -5677,6 +5704,15 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      check_sms_rate_limit: {
+        Args: {
+          user_uuid: string
+          operation_type: string
+          max_operations?: number
+          window_minutes?: number
+        }
+        Returns: boolean
+      }
       cleanup_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -5798,12 +5834,24 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      validate_sms_input: {
+        Args: {
+          phone_number: string
+          message_content: string
+          user_uuid: string
+        }
+        Returns: Json
+      }
       validate_user_permissions: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
       verify_admin_role: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      verify_contact_ownership: {
+        Args: { user_uuid: string; contact_phone: string }
         Returns: boolean
       }
     }

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { Resend } from "npm:resend@2.0.0"
 
 const corsHeaders = {
@@ -105,6 +106,53 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Get user ID from JWT token
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: 'Authentication required' 
+        }),
+        {
+          status: 401,
+          headers: { 
+            'Content-Type': 'application/json', 
+            ...corsHeaders 
+          },
+        }
+      )
+    }
+
+    // Create Supabase client for database operations
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    )
+
+    // Get current user
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: 'Invalid authentication' 
+        }),
+        {
+          status: 401,
+          headers: { 
+            'Content-Type': 'application/json', 
+            ...corsHeaders 
+          },
+        }
+      )
+    }
+
     const { contacts, message, senderName = 'Someone you care about' }: SendMessageRequest = await req.json()
     
     // Check if Twilio is configured
@@ -124,6 +172,57 @@ const handler = async (req: Request): Promise<Response> => {
         }
       )
     }
+
+    // Check rate limit for crisis alerts
+    const { data: rateLimitCheck, error: rateLimitError } = await supabaseClient
+      .rpc('check_sms_rate_limit', {
+        user_uuid: user.id,
+        operation_type: 'crisis_alert',
+        max_operations: 3,
+        window_minutes: 5
+      })
+
+    if (rateLimitError || !rateLimitCheck) {
+      console.error('Rate limit check failed:', rateLimitError)
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: 'Too many crisis alerts sent recently. Please wait before sending another.' 
+        }),
+        {
+          status: 429,
+          headers: { 
+            'Content-Type': 'application/json', 
+            ...corsHeaders 
+          },
+        }
+      )
+    }
+
+    // Validate input data
+    const { data: validationResult, error: validationError } = await supabaseClient
+      .rpc('validate_sms_input', {
+        phone_number: contacts[0]?.phoneNumber || '',
+        message_content: message,
+        user_uuid: user.id
+      })
+
+    if (validationError || !validationResult?.is_valid) {
+      console.error('Input validation failed:', validationError || validationResult?.errors)
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: validationResult?.errors?.[0] || 'Invalid input data' 
+        }),
+        {
+          status: 400,
+          headers: { 
+            'Content-Type': 'application/json', 
+            ...corsHeaders 
+          },
+        }
+      )
+    }
     
     console.log('Sending support messages:', { 
       contactCount: contacts.length, 
@@ -136,13 +235,31 @@ const handler = async (req: Request): Promise<Response> => {
     for (const contact of contacts) {
       if (!contact.isActive) continue
       
-      const personalizedMessage = `${message}\n\n- ${senderName}`
+      // Verify contact ownership
+      const { data: ownershipCheck, error: ownershipError } = await supabaseClient
+        .rpc('verify_contact_ownership', {
+          user_uuid: user.id,
+          contact_phone: contact.phoneNumber
+        })
+
+      if (ownershipError || !ownershipCheck) {
+        console.error(`Unauthorized contact access for ${contact.name}`)
+        results.push({
+          contact: contact.name,
+          method: 'sms',
+          success: false,
+          error: 'Unauthorized contact access'
+        })
+        continue
+      }
+      
+      const personalizedMessage = validationResult.sanitized_message + `\n\n- ${senderName}`
       
       try {
         // Send SMS
         if (contact.phoneNumber) {
           console.log(`Sending SMS to ${contact.name} at ${contact.phoneNumber}`)
-          const smsResult = await sendSMS(contact.phoneNumber, personalizedMessage)
+          const smsResult = await sendSMS(validationResult.clean_phone, personalizedMessage)
           results.push({
             contact: contact.name,
             method: 'sms',
