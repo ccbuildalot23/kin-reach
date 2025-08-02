@@ -5640,6 +5640,14 @@ export type Database = {
         Args: { request_id: string; approval_notes?: string }
         Returns: undefined
       }
+      assign_user_role: {
+        Args: {
+          target_user_id: string
+          new_role: Database["public"]["Enums"]["app_role"]
+          reason?: string
+        }
+        Returns: Json
+      }
       calculate_optimal_notification_time: {
         Args: { user_uuid: string }
         Returns: string
@@ -5763,6 +5771,14 @@ export type Database = {
       notify_partner: {
         Args: { partner_id: string; notification_type: string; data: Json }
         Returns: undefined
+      }
+      remove_user_role: {
+        Args: {
+          target_user_id: string
+          role_to_remove: Database["public"]["Enums"]["app_role"]
+          reason?: string
+        }
+        Returns: Json
       }
       search_peer_messages: {
         Args: {
