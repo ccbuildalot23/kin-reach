@@ -5,6 +5,7 @@ import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
 import { CrisisButton } from "@/components/CrisisButton";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -361,6 +362,7 @@ const Index = () => {
             <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} text-lg`}>Take a deep breath. We're here for you.</p>
           </div>
           <div className="flex gap-2">
+            <NotificationBell />
             {/* Compact Crisis Button in header */}
             <CrisisButton userId={user?.id || ''} variant="compact" showStatus={false} />
             <button
