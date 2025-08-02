@@ -4,8 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, Mail, Lock, User, Calendar } from 'lucide-react';
+import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle } from 'lucide-react';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -14,6 +15,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [recoveryStartDate, setRecoveryStartDate] = useState('');
+  const [smsConsent, setSmsConsent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -31,6 +33,16 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
+    if (!smsConsent) {
+      toast({
+        title: "SMS Consent Required",
+        description: "Please agree to receive text messages to continue",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -39,7 +51,9 @@ const Auth = () => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName,
-            recovery_start_date: recoveryStartDate || new Date().toISOString().split('T')[0]
+            recovery_start_date: recoveryStartDate || new Date().toISOString().split('T')[0],
+            sms_consent_given: smsConsent,
+            sms_consent_timestamp: new Date().toISOString()
           }
         }
       });
@@ -155,6 +169,64 @@ const Auth = () => {
                     value={recoveryStartDate}
                     onChange={(e) => setRecoveryStartDate(e.target.value)}
                   />
+                </div>
+
+                {/* SMS Consent Form */}
+                <div className="space-y-4 p-4 bg-secondary/20 rounded-lg border border-border/50">
+                  <div className="flex items-start space-x-2">
+                    <MessageSquare className="w-5 h-5 mt-1 text-primary flex-shrink-0" />
+                    <div className="space-y-3">
+                      <h3 className="font-semibold text-foreground">SMS Support Communications</h3>
+                      
+                      <div className="text-sm text-muted-foreground space-y-2">
+                        <p>
+                          <strong>Message Frequency:</strong> You will receive daily wellness check-ins, 
+                          as-needed crisis support notifications, and weekly appointment reminders.
+                        </p>
+                        
+                        <p>
+                          <strong>Standard messaging rates apply.</strong> Data and message rates may apply based on your mobile carrier plan.
+                        </p>
+                        
+                        <div className="bg-card/50 p-3 rounded border border-border/30">
+                          <p className="font-medium text-foreground mb-2">How to manage your preferences:</p>
+                          <ul className="space-y-1 text-xs">
+                            <li>• Reply <strong>STOP</strong> to any message to unsubscribe</li>
+                            <li>• Text <strong>STOP</strong> to our support number anytime</li>
+                            <li>• Update preferences in your app settings</li>
+                            <li>• Text <strong>HELP</strong> for support information</li>
+                          </ul>
+                        </div>
+                        
+                        <div className="flex items-start space-x-2 p-2 bg-warning/10 rounded border border-warning/20">
+                          <AlertTriangle className="w-4 h-4 mt-0.5 text-warning flex-shrink-0" />
+                          <div className="text-xs">
+                            <p className="font-medium">Age Requirement:</p>
+                            <p>You must be 18+ or have guardian consent to participate in SMS communications.</p>
+                          </div>
+                        </div>
+                        
+                        <p className="text-xs">
+                          All consent is documented with timestamps and stored securely in compliance with healthcare privacy regulations (HIPAA).
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 pt-2">
+                        <Checkbox
+                          id="smsConsent"
+                          checked={smsConsent}
+                          onCheckedChange={(checked) => setSmsConsent(checked as boolean)}
+                          className="border-primary data-[state=checked]:bg-primary"
+                        />
+                        <Label 
+                          htmlFor="smsConsent" 
+                          className="text-sm font-medium cursor-pointer text-foreground"
+                        >
+                          I agree to receive text messages from Serenity Recovery App to support my mental health journey
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
