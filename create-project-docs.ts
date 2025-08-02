@@ -1,97 +1,98 @@
-// create-project-docs.ts
+// create-project-docs.ts 
+// Updated version that includes notification system
 // Run this in lovable.dev to generate comprehensive project documentation
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'fs'
+import path from 'path'
 
 // Configuration for what files to include/exclude
 const IMPORTANT_EXTENSIONS = [
   '.ts', '.tsx', '.js', '.jsx', 
   '.css', '.scss', '.json', '.md',
   '.sql', '.env.example'
-];
+]
 
 const IMPORTANT_DIRECTORIES = [
   'src', 'components', 'lib', 'hooks', 'pages', 
   'utils', 'services', 'integrations', 'types',
-  'supabase', 'public', 'styles'
-];
+  'supabase', 'public', 'styles', 'notifications'
+]
 
 const EXCLUDE_PATTERNS = [
   'node_modules', '.git', 'dist', 'build', 
   '.next', '.cache', '.vercel', 'coverage'
-];
+]
 
 // Function to check if path should be excluded
 function shouldExclude(filePath: string): boolean {
-  return EXCLUDE_PATTERNS.some(pattern => filePath.includes(pattern));
+  return EXCLUDE_PATTERNS.some(pattern => filePath.includes(pattern))
 }
 
 // Function to check if file is important
 function isImportantFile(filePath: string): boolean {
-  const ext = path.extname(filePath);
-  return IMPORTANT_EXTENSIONS.includes(ext) && !shouldExclude(filePath);
+  const ext = path.extname(filePath)
+  return IMPORTANT_EXTENSIONS.includes(ext) && !shouldExclude(filePath)
 }
 
 // Recursively get all files in directory
 function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
   try {
-    const files = fs.readdirSync(dirPath);
+    const files = fs.readdirSync(dirPath)
 
     files.forEach((file) => {
-      const filePath = path.join(dirPath, file);
-      if (shouldExclude(filePath)) return;
+      const filePath = path.join(dirPath, file)
+      if (shouldExclude(filePath)) return
 
       if (fs.statSync(filePath).isDirectory()) {
-        arrayOfFiles = getAllFiles(filePath, arrayOfFiles);
+        arrayOfFiles = getAllFiles(filePath, arrayOfFiles)
       } else if (isImportantFile(filePath)) {
-        arrayOfFiles.push(filePath);
+        arrayOfFiles.push(filePath)
       }
-    });
+    })
   } catch (error) {
-    console.error(`Error reading directory ${dirPath}:`, error);
+    console.error(`Error reading directory ${dirPath}:`, error)
   }
 
-  return arrayOfFiles;
+  return arrayOfFiles
 }
 
 // Generate file tree structure
 function generateFileTree(files: string[]): string {
-  const tree: any = {};
+  const tree: any = {}
   
   files.forEach(file => {
-    const parts = file.split(path.sep);
-    let current = tree;
+    const parts = file.split(path.sep)
+    let current = tree
     
     parts.forEach((part, index) => {
       if (index === parts.length - 1) {
-        current[part] = null;
+        current[part] = null
       } else {
-        current[part] = current[part] || {};
-        current = current[part];
+        current[part] = current[part] || {}
+        current = current[part]
       }
-    });
-  });
+    })
+  })
 
   function printTree(obj: any, prefix = ''): string {
-    let result = '';
-    const entries = Object.entries(obj);
+    let result = ''
+    const entries = Object.entries(obj)
     
     entries.forEach(([key, value], index) => {
-      const isLast = index === entries.length - 1;
-      const connector = isLast ? '└── ' : '├── ';
-      result += prefix + connector + key + '\n';
+      const isLast = index === entries.length - 1
+      const connector = isLast ? '└── ' : '├── '
+      result += prefix + connector + key + '\n'
       
       if (value !== null) {
-        const extension = isLast ? '    ' : '│   ';
-        result += printTree(value, prefix + extension);
+        const extension = isLast ? '    ' : '│   '
+        result += printTree(value, prefix + extension)
       }
-    });
+    })
     
-    return result;
+    return result
   }
 
-  return printTree(tree);
+  return printTree(tree)
 }
 
 // Analyze project structure
@@ -105,40 +106,44 @@ function analyzeProject(): any {
       byType: {},
       byDirectory: {}
     }
-  };
+  }
 
   // Get all important files
-  const files = getAllFiles('.');
-  projectInfo.files = files.sort();
-  projectInfo.stats.totalFiles = files.length;
+  const files = getAllFiles('.')
+  projectInfo.files = files.sort()
+  projectInfo.stats.totalFiles = files.length
 
   // Count files by type
   files.forEach(file => {
-    const ext = path.extname(file) || 'no-extension';
-    projectInfo.stats.byType[ext] = (projectInfo.stats.byType[ext] || 0) + 1;
+    const ext = path.extname(file) || 'no-extension'
+    projectInfo.stats.byType[ext] = (projectInfo.stats.byType[ext] || 0) + 1
 
-    const dir = path.dirname(file).split(path.sep)[0] || 'root';
-    projectInfo.stats.byDirectory[dir] = (projectInfo.stats.byDirectory[dir] || 0) + 1;
-  });
+    const dir = path.dirname(file).split(path.sep)[0] || 'root'
+    projectInfo.stats.byDirectory[dir] = (projectInfo.stats.byDirectory[dir] || 0) + 1
+  })
 
-  // Identify key project files
+  // Identify key project files - UPDATED WITH NOTIFICATION SYSTEM
   projectInfo.keyFiles = {
     packageJson: fs.existsSync('package.json'),
     tsconfig: fs.existsSync('tsconfig.json'),
     envExample: fs.existsSync('.env.example'),
     supabaseTypes: files.find(f => f.includes('supabase') && f.includes('types')),
     phoneUtils: files.find(f => f.includes('phoneUtils')),
+    notificationService: files.find(f => f.includes('notificationService')),
+    notificationComponents: files.filter(f => f.includes('notifications') && f.endsWith('.tsx')),
     smsComponents: files.filter(f => f.toLowerCase().includes('sms')),
     authComponents: files.filter(f => f.toLowerCase().includes('auth')),
-    databaseSchema: files.filter(f => f.endsWith('.sql'))
-  };
+    databaseSchema: files.filter(f => f.endsWith('.sql')),
+    crisisComponents: files.filter(f => f.toLowerCase().includes('crisis'))
+  }
 
-  return projectInfo;
+  return projectInfo
 }
 
-// Generate README content
+// Generate README content - UPDATED VERSION
 function generateReadme(projectInfo: any): string {
-  const fileTree = generateFileTree(projectInfo.files);
+  const fileTree = generateFileTree(projectInfo.files)
+  const codeFence = '```'
   
   return `# Serenity Recovery App - Project Documentation
 
@@ -152,21 +157,23 @@ Serenity is a mental health and addiction recovery app built with:
 - **Backend:** Supabase (PostgreSQL + Auth + Realtime)
 - **Development:** Lovable.dev
 - **SMS:** Twilio (A2P 10DLC pending)
+- **Notifications:** In-app + SMS fallback for urgent
 
 ## 📁 Project Structure
 
-\`\`\`
+${codeFence}
 ${fileTree}
-\`\`\`
+${codeFence}
 
 ## 🗄️ Database Schema
 
 ### Core Tables
 - **profiles** - User profiles with phone numbers (E.164 format)
-- **notifications** - In-app notification system
-- **notification_preferences** - User notification settings
-- **notification_read_receipts** - Track read status
-- **support_network** - User connections for crisis alerts
+- **notifications** - In-app notification system ✨ NEW
+- **notification_preferences** - User notification settings ✨ NEW
+- **notification_read_receipts** - Track read status ✨ NEW
+- **support_network** - User connections for crisis alerts ✨ NEW
+- **accountability_partners** - Peer support connections ✨ NEW
 - **check_ins** - Daily recovery check-ins
 - **crisis_contacts** - Emergency contact information
 
@@ -174,19 +181,24 @@ ${fileTree}
 - Users → Profiles (1:1)
 - Users → Notifications (1:many)
 - Users → Support Network (many:many)
+- Notifications → Read Receipts (1:many)
 
 ## 🎨 Styling Guidelines
 
 - **UI Framework:** Tailwind CSS
 - **Component Library:** shadcn/ui
+- **Icons:** Lucide React
 - **Color Scheme:** 
   - Primary: Recovery-focused calm colors
   - Destructive: Red for crisis alerts
   - Muted: Gray tones for secondary content
+  - Success: Green for milestones
+  - Warning: Orange for high priority
 - **Design Principles:**
   - Mobile-first responsive design
   - Accessibility-focused (WCAG 2.1 AA)
   - Recovery-centered UX (calm, supportive, clear)
+  - Real-time updates for critical features
 
 ## 📱 Key Features Status
 
@@ -196,28 +208,36 @@ ${fileTree}
 - Crisis contact management
 - Basic authentication flow
 - Phone input components
+- **In-app notification system** ✨ NEW
+  - Real-time notifications via Supabase
+  - NotificationBell with unread badge
+  - Notification preferences
+  - Crisis alerts to support network
+  - SMS fallback for urgent messages
 
 ### 🚧 In Progress
-- In-app notification system
-- Daily check-ins
-- Support network features
+- Daily check-ins UI
+- Support network management
+- Milestone tracking
 
 ### 📋 Planned
-- Recovery milestones
+- Recovery milestones celebrations
 - Group support features
 - Analytics dashboard
+- Meeting finder integration
 
 ## 🔧 Technical Details
 
 ### Environment Variables Required
-\`\`\`
+
+${codeFence}
 SUPABASE_URL=https://tqyiqstpvwztvofrxpuf.supabase.co
 SUPABASE_ANON_KEY=[your-anon-key]
 TWILIO_ACCOUNT_SID=[pending-a2p-approval]
 TWILIO_AUTH_TOKEN=[pending-a2p-approval]
 TWILIO_PHONE_NUMBER=+12406972451
 TWILIO_MESSAGING_SERVICE_SID=[your-messaging-service-sid]
-\`\`\`
+${codeFence}
 
 ### Phone Number System
 - **Format:** E.164 (+1XXXXXXXXXX)
@@ -233,11 +253,26 @@ TWILIO_MESSAGING_SERVICE_SID=[your-messaging-service-sid]
 - **Mock Mode:** Currently active
 - **Go Live:** After A2P approval (2-3 weeks)
 
-### Notification System
+### Notification System ✨ NEW
+- **Architecture:** In-app primary, SMS for urgent only
 - **Database:** notifications, preferences, read_receipts tables
 - **Service:** \`src/lib/notificationService.ts\`
-- **Components:** NotificationBell, List, Preferences
-- **Real-time:** Supabase subscriptions
+- **Components:** 
+  - \`NotificationBell.tsx\` - Header notification icon
+  - \`NotificationList.tsx\` - Dropdown list
+  - \`NotificationItem.tsx\` - Individual notifications
+  - \`NotificationPreferences.tsx\` - User settings
+  - \`SendNotificationForm.tsx\` - Send messages
+- **Crisis System:** \`CrisisAlertButton.tsx\` - One-tap emergency alerts
+- **Real-time:** Supabase channels + PostgreSQL triggers
+- **Priority Levels:** low, normal, high, urgent
+- **Features:**
+  - Quiet hours (bypassed by urgent)
+  - Type-based preferences
+  - Browser notifications
+  - Support network alerts
+  - Unread badges
+  - Mark all as read
 
 ## 📊 File Statistics
 - **Total Files:** ${projectInfo.stats.totalFiles}
@@ -255,6 +290,13 @@ TWILIO_MESSAGING_SERVICE_SID=[your-messaging-service-sid]
 ${projectInfo.keyFiles.phoneUtils ? `- \`${projectInfo.keyFiles.phoneUtils}\` - Phone utilities` : ''}
 ${projectInfo.keyFiles.smsComponents.map((f: string) => `- \`${f}\``).join('\n')}
 
+### Notification System ✨ NEW
+${projectInfo.keyFiles.notificationService ? `- \`${projectInfo.keyFiles.notificationService}\` - Core notification service` : ''}
+${projectInfo.keyFiles.notificationComponents.slice(0, 5).map((f: string) => `- \`${f}\``).join('\n')}
+
+### Crisis Response
+${projectInfo.keyFiles.crisisComponents.map((f: string) => `- \`${f}\``).join('\n')}
+
 ### Authentication
 ${projectInfo.keyFiles.authComponents.map((f: string) => `- \`${f}\``).join('\n')}
 
@@ -264,19 +306,26 @@ ${projectInfo.keyFiles.databaseSchema.map((f: string) => `- \`${f}\``).join('\n'
 ## 🚀 Development Workflow
 
 1. **Local Development**
-   \`\`\`bash
+   ${codeFence}bash
    npm install
    npm run dev
-   \`\`\`
+   ${codeFence}
 
 2. **Database Updates**
    - Run SQL in Supabase dashboard
    - Generate types: \`npm run supabase:types\`
 
-3. **Adding Features**
+3. **Testing Notifications**
+   - Create test users
+   - Add to support network
+   - Send test notifications
+   - Verify real-time updates
+
+4. **Adding Features**
    - Update this README
    - Follow existing patterns
    - Test in mock mode first
+   - Consider notification integration
 
 ## 📝 Update Instructions
 
@@ -294,41 +343,81 @@ Run \`node create-project-docs.ts\` to regenerate file listings.
 - **Recovery First:** All features support sobriety
 - **Key Milestone:** October 18, 2025 (90 days + birthday)
 - **Mission:** Help others in recovery through technology
+- **Current Focus:** Building notification system for community support
+
+## 🔔 Notification System Details
+
+### Notification Types
+- **crisis_alert** - Emergency notifications (always urgent)
+- **check_in** - Daily recovery check-ins
+- **milestone** - Recovery achievements
+- **support_message** - Peer support messages
+- **sponsor_message** - Sponsor communications
+- **meeting_reminder** - Recovery meeting alerts
+- **system** - App updates and info
+
+### Usage Examples
+
+${codeFence}typescript
+// Send crisis alert
+await NotificationService.sendCrisisAlert(userId, "I need help")
+
+// Send support message
+await NotificationService.send({
+  recipientId: friendId,
+  type: 'support_message',
+  title: 'Thinking of you',
+  message: 'You got this! One day at a time.',
+  priority: 'normal'
+})
+
+// Celebrate milestone
+await NotificationService.sendToSupportNetwork(userId, {
+  type: 'milestone',
+  title: '30 Days Clean! 🎉',
+  message: 'I made it to 30 days!',
+  priority: 'high'
+})
+${codeFence}
 
 ---
 *This documentation is critical for maintaining project continuity across chat sessions.*
+*Remember: Recovery comes first. Every feature should support the journey to sobriety.*
 `;
 }
 
 // Main execution
 async function main() {
-  console.log('🔍 Analyzing project structure...');
-  const projectInfo = analyzeProject();
+  console.log('🔍 Analyzing project structure...')
+  const projectInfo = analyzeProject()
   
-  console.log('📝 Generating README...');
-  const readmeContent = generateReadme(projectInfo);
+  console.log('📝 Generating README...')
+  const readmeContent = generateReadme(projectInfo)
   
   // Write README
-  fs.writeFileSync('PROJECT_DOCS.md', readmeContent);
-  console.log('✅ Created PROJECT_DOCS.md');
+  fs.writeFileSync('PROJECT_DOCS.md', readmeContent)
+  console.log('✅ Created PROJECT_DOCS.md')
   
   // Write important files list
-  const filesList = projectInfo.files.join('\n');
-  fs.writeFileSync('important-files.txt', filesList);
-  console.log('✅ Created important-files.txt');
+  const filesList = projectInfo.files.join('\n')
+  fs.writeFileSync('important-files.txt', filesList)
+  console.log('✅ Created important-files.txt')
   
   // Write JSON summary for easy parsing
-  fs.writeFileSync('project-info.json', JSON.stringify(projectInfo, null, 2));
-  console.log('✅ Created project-info.json');
+  fs.writeFileSync('project-info.json', JSON.stringify(projectInfo, null, 2))
+  console.log('✅ Created project-info.json')
   
-  console.log('\n📊 Summary:');
-  console.log(`- Total important files: ${projectInfo.stats.totalFiles}`);
-  console.log(`- Key directories: ${Object.keys(projectInfo.stats.byDirectory).join(', ')}`);
-  console.log('\n🎯 Next steps:');
-  console.log('1. Review PROJECT_DOCS.md');
-  console.log('2. Run this script after major updates');
-  console.log('3. Include PROJECT_DOCS.md in future chat contexts');
+  console.log('\n📊 Summary:')
+  console.log(`- Total important files: ${projectInfo.stats.totalFiles}`)
+  console.log(`- Notification components: ${projectInfo.keyFiles.notificationComponents?.length || 0}`)
+  console.log(`- Key directories: ${Object.keys(projectInfo.stats.byDirectory).join(', ')}`)
+  console.log('\n🎯 Next steps:')
+  console.log('1. Review PROJECT_DOCS.md')
+  console.log('2. Test notification system')
+  console.log('3. Run this script after major updates')
+  console.log('4. Include PROJECT_DOCS.md in future chat contexts')
 }
 
 // Run the script
-main().catch(console.error);
+main().catch(console.error)
+
