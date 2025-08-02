@@ -166,7 +166,7 @@ export function getPhoneNumberInfo(phone: string): {
 // Common phone number patterns for validation
 export const PHONE_PATTERNS = {
   // US phone number with various formats
-  US_LOOSE: /^[\+]?[1]?[\s\-\.\(\)]*[2-9]\d{2}[\s\-\.\(\)]*\d{3}[\s\-\.]*\d{4}$/,
+  US_LOOSE: /^[+]?[1]?[\s-.()]*[2-9]\d{2}[\s-.()]*\d{3}[\s-.]*\d{4}$/,
   
   // Strict E.164 format
   E164: /^\+1[2-9]\d{9}$/,
