@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
+import { CrisisButton } from '@/components/CrisisButton';
 import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle } from 'lucide-react';
 
 const Auth = () => {
@@ -288,10 +289,16 @@ const Auth = () => {
         </div>
 
         {/* Emergency Resources */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-4">
           <p className="text-sm text-muted-foreground mb-2">
             Need immediate help?
           </p>
+          
+          {/* Crisis Button for anonymous users */}
+          <div className="flex justify-center">
+            <CrisisButton userId="anonymous" variant="compact" showStatus={false} />
+          </div>
+          
           <p className="text-xs text-muted-foreground">
             Crisis Lifeline: 988 • Emergency: 911
           </p>

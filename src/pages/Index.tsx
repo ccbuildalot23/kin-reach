@@ -4,6 +4,7 @@ import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Su
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
+import { CrisisButton } from "@/components/CrisisButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -359,6 +360,8 @@ const Index = () => {
             <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} text-lg`}>Take a deep breath. We're here for you.</p>
           </div>
           <div className="flex gap-2">
+            {/* Compact Crisis Button in header */}
+            <CrisisButton userId={user?.id || ''} variant="compact" showStatus={false} />
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
@@ -375,17 +378,10 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Emergency Button */}
-        <button
-          onClick={handleEmergencyHelp}
-          className="w-full mb-6 bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-semibold text-lg
-            animate-pulse hover:animate-none transition-all transform hover:scale-105 shadow-lg"
-        >
-          <div className="flex items-center justify-center">
-            <AlertCircle className="w-6 h-6 mr-2" />
-            It's Okay If You Need Help Now
-          </div>
-        </button>
+        {/* Crisis Button - Emergency variant */}
+        <div className="mb-6">
+          <CrisisButton userId={user?.id || ''} variant="emergency" />
+        </div>
 
         {/* Contact Manager Button */}
         <button
