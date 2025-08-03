@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      accountability_partners: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          partner_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          partner_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          partner_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       accountability_partnerships: {
         Row: {
           accepted_at: string | null
@@ -2322,84 +2346,51 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
-          appointment_channels: Json | null
-          batch_delay_minutes: number | null
-          batch_similar_notifications: boolean | null
-          check_in_channels: Json | null
-          community_channels: Json | null
-          created_at: string
-          crisis_channels: Json | null
-          emergency_override: boolean | null
-          global_unsubscribe: boolean | null
-          goal_deadline_channels: Json | null
+          check_ins: boolean | null
+          crisis_alerts: boolean | null
+          email_enabled: boolean | null
           id: string
-          language_preference: string | null
-          max_daily_notifications: number | null
-          max_hourly_notifications: number | null
-          optimal_delivery_enabled: boolean | null
-          provider_channels: Json | null
-          quiet_hours_enabled: boolean | null
+          in_app_enabled: boolean | null
+          meeting_reminders: boolean | null
+          milestones: boolean | null
           quiet_hours_end: string | null
           quiet_hours_start: string | null
-          quiet_hours_timezone: string | null
-          system_channels: Json | null
-          unsubscribe_token: string | null
-          unsubscribed_types: Json | null
-          updated_at: string
+          sms_enabled: boolean | null
+          sponsor_messages: boolean | null
+          support_messages: boolean | null
+          updated_at: string | null
           user_id: string
         }
         Insert: {
-          appointment_channels?: Json | null
-          batch_delay_minutes?: number | null
-          batch_similar_notifications?: boolean | null
-          check_in_channels?: Json | null
-          community_channels?: Json | null
-          created_at?: string
-          crisis_channels?: Json | null
-          emergency_override?: boolean | null
-          global_unsubscribe?: boolean | null
-          goal_deadline_channels?: Json | null
+          check_ins?: boolean | null
+          crisis_alerts?: boolean | null
+          email_enabled?: boolean | null
           id?: string
-          language_preference?: string | null
-          max_daily_notifications?: number | null
-          max_hourly_notifications?: number | null
-          optimal_delivery_enabled?: boolean | null
-          provider_channels?: Json | null
-          quiet_hours_enabled?: boolean | null
+          in_app_enabled?: boolean | null
+          meeting_reminders?: boolean | null
+          milestones?: boolean | null
           quiet_hours_end?: string | null
           quiet_hours_start?: string | null
-          quiet_hours_timezone?: string | null
-          system_channels?: Json | null
-          unsubscribe_token?: string | null
-          unsubscribed_types?: Json | null
-          updated_at?: string
+          sms_enabled?: boolean | null
+          sponsor_messages?: boolean | null
+          support_messages?: boolean | null
+          updated_at?: string | null
           user_id: string
         }
         Update: {
-          appointment_channels?: Json | null
-          batch_delay_minutes?: number | null
-          batch_similar_notifications?: boolean | null
-          check_in_channels?: Json | null
-          community_channels?: Json | null
-          created_at?: string
-          crisis_channels?: Json | null
-          emergency_override?: boolean | null
-          global_unsubscribe?: boolean | null
-          goal_deadline_channels?: Json | null
+          check_ins?: boolean | null
+          crisis_alerts?: boolean | null
+          email_enabled?: boolean | null
           id?: string
-          language_preference?: string | null
-          max_daily_notifications?: number | null
-          max_hourly_notifications?: number | null
-          optimal_delivery_enabled?: boolean | null
-          provider_channels?: Json | null
-          quiet_hours_enabled?: boolean | null
+          in_app_enabled?: boolean | null
+          meeting_reminders?: boolean | null
+          milestones?: boolean | null
           quiet_hours_end?: string | null
           quiet_hours_start?: string | null
-          quiet_hours_timezone?: string | null
-          system_channels?: Json | null
-          unsubscribe_token?: string | null
-          unsubscribed_types?: Json | null
-          updated_at?: string
+          sms_enabled?: boolean | null
+          sponsor_messages?: boolean | null
+          support_messages?: boolean | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -2478,6 +2469,32 @@ export type Database = {
           },
         ]
       }
+      notification_read_receipts: {
+        Row: {
+          notification_id: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          notification_id: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          notification_id?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_read_receipts_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_templates: {
         Row: {
           body_template: string
@@ -2517,6 +2534,48 @@ export type Database = {
           type?: string
           updated_at?: string
           variables?: Json | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          data: Json | null
+          expires_at: string | null
+          id: string
+          message: string
+          priority: string | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          message: string
+          priority?: string | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          message?: string
+          priority?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string | null
+          title?: string
+          type?: string
         }
         Relationships: []
       }
@@ -3364,9 +3423,12 @@ export type Database = {
       }
       profiles: {
         Row: {
+          allow_contact_from: string | null
           assessment_reminder_time: string | null
+          bio: string | null
           created_at: string
           data_sharing_consent: boolean | null
+          display_name: string | null
           email: string | null
           emergency_contact_consent: boolean | null
           enable_crisis_alerts: boolean | null
@@ -3374,14 +3436,22 @@ export type Database = {
           full_name: string | null
           hipaa_consent_given: boolean | null
           id: string
+          is_searchable: boolean | null
+          phone_number: string | null
+          profile_visibility: string | null
           recovery_start_date: string | null
+          recovery_type: string | null
           timezone: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
+          allow_contact_from?: string | null
           assessment_reminder_time?: string | null
+          bio?: string | null
           created_at?: string
           data_sharing_consent?: boolean | null
+          display_name?: string | null
           email?: string | null
           emergency_contact_consent?: boolean | null
           enable_crisis_alerts?: boolean | null
@@ -3389,14 +3459,22 @@ export type Database = {
           full_name?: string | null
           hipaa_consent_given?: boolean | null
           id: string
+          is_searchable?: boolean | null
+          phone_number?: string | null
+          profile_visibility?: string | null
           recovery_start_date?: string | null
+          recovery_type?: string | null
           timezone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
+          allow_contact_from?: string | null
           assessment_reminder_time?: string | null
+          bio?: string | null
           created_at?: string
           data_sharing_consent?: boolean | null
+          display_name?: string | null
           email?: string | null
           emergency_contact_consent?: boolean | null
           enable_crisis_alerts?: boolean | null
@@ -3404,9 +3482,14 @@ export type Database = {
           full_name?: string | null
           hipaa_consent_given?: boolean | null
           id?: string
+          is_searchable?: boolean | null
+          phone_number?: string | null
+          profile_visibility?: string | null
           recovery_start_date?: string | null
+          recovery_type?: string | null
           timezone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -4986,37 +5069,28 @@ export type Database = {
       }
       support_network: {
         Row: {
-          created_at: string
+          created_at: string | null
           id: string
-          last_activity: string | null
-          patient_id: string
-          permissions: Json
-          relationship_type: string
-          status: string
-          support_member_id: string
-          updated_at: string
+          is_active: boolean | null
+          relationship_type: string | null
+          supporter_id: string
+          user_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          last_activity?: string | null
-          patient_id: string
-          permissions?: Json
-          relationship_type: string
-          status?: string
-          support_member_id: string
-          updated_at?: string
+          is_active?: boolean | null
+          relationship_type?: string | null
+          supporter_id: string
+          user_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          last_activity?: string | null
-          patient_id?: string
-          permissions?: Json
-          relationship_type?: string
-          status?: string
-          support_member_id?: string
-          updated_at?: string
+          is_active?: boolean | null
+          relationship_type?: string | null
+          supporter_id?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -5824,6 +5898,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_unread_notification_count: {
+        Args: Record<PropertyKey, never> | { user_uuid: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _user_id: string
@@ -5855,6 +5933,14 @@ export type Database = {
         Args: { table_name: string; operation_type: string; record_id?: string }
         Returns: undefined
       }
+      mark_all_notifications_read: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      mark_notification_read: {
+        Args: { notification_uuid: string }
+        Returns: undefined
+      }
       notify_partner: {
         Args: { partner_id: string; notification_type: string; data: Json }
         Returns: undefined
@@ -5866,6 +5952,10 @@ export type Database = {
           reason?: string
         }
         Returns: Json
+      }
+      sanitize_error_message: {
+        Args: { error_message: string; error_context?: string }
+        Returns: string
       }
       search_peer_messages: {
         Args: {
@@ -5880,6 +5970,16 @@ export type Database = {
           created_at: string
           rank: number
         }[]
+      }
+      send_to_support_network: {
+        Args: {
+          sender_uuid: string
+          notification_type: string
+          notification_title: string
+          notification_message: string
+          notification_priority?: string
+        }
+        Returns: undefined
       }
       validate_security_configuration: {
         Args: Record<PropertyKey, never>
