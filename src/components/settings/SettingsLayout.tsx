@@ -5,8 +5,12 @@ import { NotificationPreferences } from "../notifications/NotificationPreference
 import { SupportNetworkSettings } from "./SupportNetworkSettings";
 import { AccountSecurity } from "./AccountSecurity";
 import { User, Shield, Bell, Users, Lock } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 export function SettingsLayout() {
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get("tab") || "profile";
+
   return (
     <div className="container max-w-4xl mx-auto py-6 space-y-6">
       <div>
@@ -16,7 +20,7 @@ export function SettingsLayout() {
         </p>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-4">
+      <Tabs defaultValue={defaultTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
