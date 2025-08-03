@@ -88,7 +88,7 @@ export const ProfileSettings: React.FC = () => {
     } else if (data) {
       setProfile({
         ...data,
-        clean_date: data.clean_date ? format(new Date(data.clean_date), 'yyyy-MM-dd') : '',
+        clean_date: data.recovery_start_date ? format(new Date(data.recovery_start_date), 'yyyy-MM-dd') : '',
       });
     }
     setLoading(false);

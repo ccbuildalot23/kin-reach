@@ -33,7 +33,7 @@ export const CrisisAlertButton: React.FC<CrisisAlertButtonProps> = ({
 
   const handleSendAlert = async () => {
     setSending(true);
-    await sendCrisisAlert(message || undefined);
+    await sendCrisisAlert();
     setSending(false);
     setShowDialog(false);
     setMessage('');

@@ -184,9 +184,8 @@ export async function sendNotificationSMS(
       .eq('user_id', userId)
       .single();
 
-    // Check if user has SMS enabled for this notification type
-    const smsChannels = (prefs?.system_channels as Record<string, boolean>) || {};
-    if (!smsChannels.sms) {
+    // Check if user has SMS enabled for crisis alerts
+    if (!prefs?.crisis_alerts) {
       console.log('📵 SMS notifications disabled for user');
       return { success: false, reason: 'SMS disabled' };
     }
