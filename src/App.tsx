@@ -5,12 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import SMSTest from "./pages/SMSTest";
 import NotificationSettings from "./pages/NotificationSettings";
 import ProfileSettings from "./pages/ProfileSettings";
 import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import CrisisAlert from "./pages/CrisisAlert";
+import { CrisisAlert } from "@/pages/CrisisAlert";
+import { SMSTesting } from "@/pages/SMSTesting";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/sms-test" element={<SMSTest />} />
+          <Route path="/sms-testing" element={<SMSTesting />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
           <Route path="/settings/profile" element={<ProfileSettings />} />
