@@ -1,23 +1,35 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { ProfileSettings } from "./ProfileSettings";
 import { PrivacySettings } from "./PrivacySettings";
 import { NotificationPreferences } from "../notifications/NotificationPreferences";
 import { SupportNetworkSettings } from "./SupportNetworkSettings";
 import { AccountSecurity } from "./AccountSecurity";
-import { User, Shield, Bell, Users, Lock } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { User, Shield, Bell, Users, Lock, ArrowLeft } from "lucide-react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export function SettingsLayout() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const defaultTab = searchParams.get("tab") || "profile";
 
   return (
     <div className="container max-w-4xl mx-auto py-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your account settings and preferences
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Settings</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage your account settings and preferences
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to App
+        </Button>
       </div>
 
       <Tabs defaultValue={defaultTab} className="space-y-4">

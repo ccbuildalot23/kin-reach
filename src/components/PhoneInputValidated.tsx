@@ -4,9 +4,10 @@ interface PhoneInputValidatedProps {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  placeholder?: string;
 }
 
-export function PhoneInputValidated({ value, onChange, error }: PhoneInputValidatedProps) {
+export function PhoneInputValidated({ value, onChange, error, placeholder }: PhoneInputValidatedProps) {
   return (
     <PhoneInput
       value={value}
@@ -15,6 +16,7 @@ export function PhoneInputValidated({ value, onChange, error }: PhoneInputValida
       }}
       error={error}
       label=""
+      placeholder={placeholder}
     />
   );
 }
