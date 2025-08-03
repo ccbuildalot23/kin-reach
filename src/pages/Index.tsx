@@ -5,6 +5,7 @@ import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
 import { TestNotifications } from "@/components/TestNotifications";
+import { SupportRequestTest } from "@/components/SupportRequestTest";
 import { CrisisButton } from "@/components/CrisisButton";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -292,12 +293,10 @@ const Index = () => {
   };
 
   const sendConnection = async () => {
-    const activeContacts = supportNetwork.filter(c => c.isActive);
-    
-    if (activeContacts.length === 0) {
+    if (!user) {
       toast({
-        title: "Add someone who cares about you",
-        description: "Go to Settings to add your support network first.",
+        title: "Please log in",
+        description: "You need to be logged in to send support requests.",
         variant: "destructive",
       });
       return;
@@ -306,23 +305,82 @@ const Index = () => {
     setButtonState('sending');
     
     try {
+      // Get user's support network from database
+      const { data: supportMembers, error: networkError } = await supabase
+        .from('support_network')
+        .select('supporter_id')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
+
+      if (networkError) {
+        console.error('Error loading support network:', networkError);
+        throw new Error('Failed to load support network');
+      }
+
+      if (!supportMembers || supportMembers.length === 0) {
+        toast({
+          title: "Add someone who cares about you",
+          description: "Go to Settings to add your support network first.",
+          variant: "destructive",
+        });
+        setButtonState('ready');
+        return;
+      }
+
+      // Create notification titles based on support type
+      const titles = {
+        'comfort': '💙 Someone needs comfort',
+        'listen': '👂 Someone needs someone to listen', 
+        'guidance': '☀️ Someone needs gentle guidance',
+        'presence': '✨ Someone needs presence',
+        'emergency': '🚨 Emergency support needed'
+      };
+
+      const notificationTitle = titles[selectedMode.id] || 'Support request';
       const messageToSend = selectedMode.message || messageTemplate;
-      await handleReachOut(activeContacts, messageToSend);
+
+      // Create notifications for each support member
+      const notifications = supportMembers.map(member => ({
+        recipient_id: member.supporter_id,
+        sender_id: user.id,
+        type: 'support_request',
+        title: notificationTitle,
+        message: messageToSend,
+        priority: selectedMode.id === 'emergency' ? 'urgent' : 'high',
+        data: {
+          support_type: selectedMode.id,
+          timestamp: new Date().toISOString(),
+          encouragement: selectedMode.encouragement
+        }
+      }));
+
+      const { data: createdNotifications, error: notificationError } = await supabase
+        .from('notifications')
+        .insert(notifications)
+        .select();
+
+      if (notificationError) {
+        console.error('Error creating notifications:', notificationError);
+        throw new Error('Failed to send notifications');
+      }
+
+      console.log('Support notifications created:', createdNotifications);
       
       setButtonState('sent');
       setCountdown(60); // 60 second cooldown
       
       toast({
-        title: "✓ Your people have been notified",
-        description: `Help is on the way. You're not alone. Contacted: ${activeContacts.map(c => c.name).join(", ")}`,
+        title: "✓ Your support network has been notified",
+        description: `${supportMembers.length} people are now aware you need support. Help is on the way.`,
         className: "bg-accent text-accent-foreground",
       });
       
     } catch (error) {
+      console.error('Failed to send support request:', error);
       setButtonState('ready');
       toast({
-        title: "The message didn't go through",
-        description: "But you took the brave step of trying. Try again?",
+        title: "The support request didn't go through",
+        description: "But you took the brave step of trying. Please try again.",
         variant: "destructive",
       });
     }
@@ -598,9 +656,9 @@ const Index = () => {
                         <Send className="w-5 h-5 mr-2 animate-pulse" />
                         Connecting...
                       </div>
-                    ) : (
-                      `Send to ${supportNetwork.filter(c => c.isActive).length} Contacts 💚`
-                    )}
+                     ) : (
+                       `Send Support Request 💚`
+                     )}
                   </Button>
                   <Button
                     onClick={() => setShowConfirmation(false)}
@@ -634,9 +692,10 @@ const Index = () => {
           </div>
         )}
 
-        {/* SMS Test Section - for development/testing */}
+        {/* Test Section - for development/testing */}
         {user && (
           <div className="mt-8 space-y-8">
+            <SupportRequestTest />
             <SMSTest />
             <TestNotifications />
           </div>
