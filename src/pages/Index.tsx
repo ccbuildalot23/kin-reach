@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
@@ -365,6 +365,13 @@ const Index = () => {
             <NotificationBell />
             {/* Compact Crisis Button in header */}
             <CrisisButton userId={user?.id || ''} variant="compact" showStatus={false} />
+            <Link 
+              to="/settings" 
+              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
+            >
+              <SettingsIcon className="h-4 w-4" />
+              Settings
+            </Link>
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
