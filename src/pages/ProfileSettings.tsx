@@ -116,12 +116,12 @@ export const ProfileSettings: React.FC = () => {
 
     const { error } = await supabase
       .from('profiles')
-      .upsert({
-        id: user.id,
+      .update({
         email: user.email,
         ...profile,
         updated_at: new Date().toISOString(),
-      });
+      })
+      .eq('user_id', user.id);
 
     if (error) {
       console.error('Error saving profile:', error);

@@ -68,16 +68,15 @@ export function ProfileSettings() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id, // Use id instead of user_id for upsert
-          user_id: user.id,
+        .update({
           display_name: displayName.trim() || null,
           full_name: fullName.trim() || null,
           email: email.trim() || null,
           phone_number: phoneNumber || null,
           bio: bio.trim() || null,
           updated_at: new Date().toISOString()
-        });
+        })
+        .eq('user_id', user.id);
 
       if (error) {
         console.error('Error saving profile:', error);

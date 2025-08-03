@@ -1,11 +1,35 @@
 /**
  * Phone number utilities for consistent formatting across the app
  * Standardizes to US E.164 format: +1XXXXXXXXXX
+ * Enhanced with security validation and input sanitization
  */
 
-// Remove all non-digit characters from phone number
+// Enhanced phone number cleaning with security validation
 export function cleanPhoneNumber(phone: string): string {
-  return phone.replace(/\D/g, '');
+  if (!phone || typeof phone !== 'string') return '';
+  
+  // Security: Check for suspicious patterns
+  if (phone.includes('script') || phone.includes('<') || phone.includes('>')) {
+    console.warn('Suspicious phone number input detected');
+    return '';
+  }
+  
+  // Remove all non-digit characters except + at the beginning
+  let cleaned = phone.replace(/[^\d+]/g, '');
+  
+  // Security: Limit length to prevent abuse
+  if (cleaned.length > 15) {
+    cleaned = cleaned.slice(0, 15);
+  }
+  
+  // If it starts with +, keep only the first + and remove any others
+  if (cleaned.startsWith('+')) {
+    cleaned = '+' + cleaned.slice(1).replace(/\+/g, '');
+    // Remove the + for digit extraction
+    return cleaned.slice(1);
+  }
+  
+  return cleaned;
 }
 
 // Format phone number for display: (XXX) XXX-XXXX
