@@ -8,7 +8,7 @@ import { CrisisButton, CrisisResources } from '@/components/CrisisButton';
 import { SMSIntegration } from '@/components/SMSIntegration';
 import { useAuth } from '@/hooks/useAuth';
 
-const SMSTestPage = () => {
+export function SMSTesting() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
 
@@ -124,6 +124,6 @@ const SMSTestPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default SMSTestPage;
+export default SMSTesting;
