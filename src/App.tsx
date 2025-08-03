@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import NotificationSettings from "./pages/NotificationSettings";
 import ProfileSettings from "./pages/ProfileSettings";
 import SettingsPage from "./pages/Settings";
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/sms-testing" element={<SMSTesting />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/settings/notifications" element={<NotificationSettings />} />

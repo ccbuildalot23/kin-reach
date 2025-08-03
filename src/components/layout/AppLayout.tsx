@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import BottomNavigation from '@/components/navigation/BottomNavigation';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -9,8 +10,13 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const location = useLocation();
   
-  // Don't show bottom navigation on auth page
-  const showBottomNav = location.pathname !== '/auth';
+  // Don't show bottom navigation on auth page or reset password page
+  const showBottomNav = location.pathname !== '/auth' && location.pathname !== '/reset-password';
+  
+  // Initialize session timeout for authenticated pages
+  if (showBottomNav) {
+    useSessionTimeout();
+  }
   
   return (
     <div className="min-h-screen bg-background">

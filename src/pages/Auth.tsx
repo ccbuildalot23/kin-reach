@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { CrisisButton } from '@/components/CrisisButton';
-import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle } from 'lucide-react';
+import { auditLogger } from '@/lib/auditLogger';
+import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle, Volume2, VolumeX, Sparkles } from 'lucide-react';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -17,18 +18,47 @@ const Auth = () => {
   const [fullName, setFullName] = useState('');
   const [recoveryStartDate, setRecoveryStartDate] = useState('');
   const [smsConsent, setSmsConsent] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [oscillator, setOscillator] = useState<OscillatorNode | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
+      if (event === 'PASSWORD_RECOVERY') {
+        // User clicked the recovery link
+        navigate('/reset-password');
+      } else if (session?.user) {
         navigate('/');
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Initialize calming sounds preference
+  useEffect(() => {
+    const savedSoundPref = localStorage.getItem('serenity-sound-enabled');
+    if (savedSoundPref === 'true') {
+      setSoundEnabled(true);
+      initializeSound();
+    }
+  }, []);
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+      }
+      if (audioContext) {
+        audioContext.close();
+      }
+    };
+  }, [oscillator, audioContext]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +75,10 @@ const Auth = () => {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Log signup attempt
+      await auditLogger.logSignupAttempt(email);
+      
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -61,11 +94,19 @@ const Auth = () => {
 
       if (error) throw error;
 
+      // Log signup success
+      if (data.user) {
+        await auditLogger.logSignupSuccess(data.user.id, email);
+      }
+
       toast({
         title: "Welcome to your safe space",
         description: "Please check your email to confirm your account",
       });
     } catch (error: any) {
+      // Log signup failure
+      await auditLogger.logSignupFailure(email, error.message);
+      
       toast({
         title: "Something went wrong",
         description: error.message,
@@ -81,6 +122,9 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      // Log login attempt
+      await auditLogger.logLoginAttempt(email);
+      
       // Clean up existing state before signing in
       Object.keys(localStorage).forEach((key) => {
         if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
@@ -103,10 +147,16 @@ const Auth = () => {
       if (error) throw error;
       
       if (data.user) {
+        // Log login success
+        await auditLogger.logLoginSuccess(data.user.id, email);
+        
         // Force page reload for clean state
         window.location.href = '/';
       }
     } catch (error: any) {
+      // Log login failure
+      await auditLogger.logLoginFailure(email, error.message);
+      
       toast({
         title: "Unable to sign in",
         description: error.message,
@@ -117,26 +167,138 @@ const Auth = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Log password reset request
+      await auditLogger.logPasswordResetRequest(email);
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Check your email",
+        description: "We've sent you a link to reset your password and return to your sanctuary.",
+        className: "bg-accent text-accent-foreground",
+      });
+      
+      setShowForgotPassword(false);
+    } catch (error: any) {
+      toast({
+        title: "Unable to send reset email",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const initializeSound = () => {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      setAudioContext(ctx);
+
+      // Create a calming sound using oscillators
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      // Use a low frequency for a calming hum
+      osc.frequency.value = 110; // A2 note
+      osc.type = 'sine';
+      
+      // Set low volume for background ambience
+      gainNode.gain.value = 0.05;
+      
+      // Connect nodes
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      // Start the oscillator
+      osc.start(0);
+      
+      setOscillator(osc);
+    } catch (error) {
+      console.error('Failed to initialize audio:', error);
+    }
+  };
+
+  const toggleSound = () => {
+    if (soundEnabled) {
+      // Stop sound
+      if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+        setOscillator(null);
+      }
+      if (audioContext) {
+        audioContext.close();
+        setAudioContext(null);
+      }
+      setSoundEnabled(false);
+      localStorage.setItem('serenity-sound-enabled', 'false');
+      toast({
+        title: "Calming sounds disabled",
+        description: "You can enable them anytime",
+      });
+    } else {
+      // Start sound
+      setSoundEnabled(true);
+      localStorage.setItem('serenity-sound-enabled', 'true');
+      initializeSound();
+      toast({
+        title: "Calming sounds enabled",
+        description: "Gentle background ambience activated",
+        className: "bg-accent text-accent-foreground",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 flex items-center justify-center p-4">
-      {/* Background Elements */}
+      {/* Enhanced Background Elements with Calming Animation */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-primary/20 to-secondary/30 rounded-full blur-3xl opacity-30 animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-3xl opacity-20 animate-pulse-subtle"></div>
+        
+        {/* Floating particles for calming effect */}
+        <div className="absolute inset-0">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-primary/20 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${15 + Math.random() * 10}s`
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-border/50">
-          {/* Header */}
+          {/* Header with Serenity Branding */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mb-4">
-              <Heart className="w-8 h-8 text-primary-foreground" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/80 to-secondary/80 rounded-full mb-4 shadow-lg animate-pulse-subtle">
+              <Sparkles className="w-10 h-10 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {isSignUp ? 'Join Your Safe Space' : 'Welcome Back'}
+            <h1 className="text-4xl font-light text-foreground mb-2 tracking-wide">
+              Serenity
             </h1>
-            <p className="text-muted-foreground mt-2">
-              {isSignUp ? 'Create your account to start your journey' : 'Sign in to access your support network'}
+            <h2 className="text-xl font-semibold text-foreground mb-3">
+              {isSignUp ? 'Begin Your Journey to Peace' : 'Welcome Back to Your Sanctuary'}
+            </h2>
+            <p className="text-muted-foreground mt-2 max-w-sm mx-auto leading-relaxed">
+              {isSignUp ? 'Create your personal haven where healing begins and support surrounds you' : 'Return to your safe space where calm awaits and your support network stands ready'}
             </p>
           </div>
 
@@ -223,7 +385,7 @@ const Auth = () => {
                           htmlFor="smsConsent" 
                           className="text-sm font-medium cursor-pointer text-foreground"
                         >
-                          I agree to receive text messages from Serenity Recovery App to support my mental health journey
+                          I agree to receive text messages from Serenity to support my mental health journey
                         </Label>
                       </div>
                     </div>
@@ -265,33 +427,81 @@ const Auth = () => {
 
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90" 
+              className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-md hover:shadow-lg" 
               disabled={loading}
             >
-              {loading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <span className="animate-pulse">Finding your peace...</span>
+                </span>
+              ) : (
+                isSignUp ? 'Begin Your Journey' : 'Enter Your Sanctuary'
+              )}
             </Button>
+
+            {/* Forgot Password Link */}
+            {!isSignUp && (
+              <div className="mt-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+                >
+                  Forgot your password?
+                </button>
+              </div>
+            )}
           </form>
 
           {/* Toggle */}
           <div className="mt-6 text-center">
             <button
-              onClick={() => setIsSignUp(!isSignUp)}
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setShowForgotPassword(false);
+              }}
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+              {isSignUp ? 'Already on your journey? Sign in' : "Ready to begin? Create your sanctuary"}
             </button>
           </div>
 
-          {/* Help */}
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Your privacy and security are our priority</p>
+          {/* Help & Sound Toggle */}
+          <div className="mt-6 space-y-4">
+            <div className="text-center text-sm text-muted-foreground">
+              <p className="flex items-center justify-center gap-2">
+                <Lock className="w-3 h-3" />
+                Your peace of mind is protected with HIPAA-compliant security
+              </p>
+            </div>
+            
+            {/* ASMR Sound Toggle */}
+            <div className="flex justify-center">
+              <button
+                onClick={toggleSound}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground bg-secondary/20 hover:bg-secondary/30 rounded-full transition-all duration-300"
+                title="Toggle calming background sounds"
+              >
+                {soundEnabled ? (
+                  <>
+                    <Volume2 className="w-4 h-4" />
+                    <span>Calming sounds on</span>
+                  </>
+                ) : (
+                  <>
+                    <VolumeX className="w-4 h-4" />
+                    <span>Enable calming sounds</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Emergency Resources */}
         <div className="mt-6 text-center space-y-4">
           <p className="text-sm text-muted-foreground mb-2">
-            Need immediate help?
+            Need immediate support?
           </p>
           
           {/* Crisis Button for anonymous users */}
@@ -300,9 +510,55 @@ const Auth = () => {
           </div>
           
           <p className="text-xs text-muted-foreground">
-            Crisis Lifeline: 988 • Emergency: 911
+            You're never alone • Crisis Lifeline: 988 • Emergency: 911
           </p>
         </div>
+
+        {/* Forgot Password Modal */}
+        {showForgotPassword && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+            <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-border/50 max-w-md w-full animate-in slide-in-from-bottom-5 duration-300">
+              <h3 className="text-xl font-semibold mb-4">Reset Your Password</h3>
+              <p className="text-muted-foreground mb-6">
+                Enter your email and we'll send you a link to create a new password and return to your sanctuary.
+              </p>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div>
+                  <Label htmlFor="reset-email" className="flex items-center">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Email Address
+                  </Label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowForgotPassword(false)}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+                  >
+                    {loading ? 'Sending...' : 'Send Reset Link'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
