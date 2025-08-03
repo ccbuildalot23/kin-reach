@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Sparkles, Phone, MessageSquare, Headphones, Volume2, Feather, Sun, Moon, Users, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut, Settings as SettingsIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Sun, Moon, AlertCircle, Send, LogOut, Heart } from 'lucide-react';
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
-import { SMSTest } from "@/components/SMSTest";
-import { TestNotifications } from "@/components/TestNotifications";
-import { SupportRequestTest } from "@/components/SupportRequestTest";
 import { CrisisButton } from "@/components/CrisisButton";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { supportModes } from "@/constants/supportModes";
 
 interface SupportPerson {
   id: string;
@@ -24,11 +19,6 @@ interface SupportPerson {
   isActive: boolean;
 }
 
-interface ReachOutEvent {
-  timestamp: Date;
-  contactsNotified: string[];
-  message: string;
-}
 
 type ButtonState = 'ready' | 'sending' | 'sent';
 
@@ -36,65 +26,19 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, loading, signOut, isAuthenticated } = useAuth();
 
-  // Define constants at the top of the component
-  const supportModes = [
-    {
-      id: 'comfort',
-      label: 'Need Comfort',
-      icon: Heart,
-      gradient: 'from-teal-400 to-blue-500',
-      message: 'I could use some comfort and understanding right now',
-      encouragement: 'It takes courage to reach out. You deserve support.'
-    },
-    {
-      id: 'listen',
-      label: 'Someone to Listen',
-      icon: Feather,
-      gradient: 'from-blue-400 to-cyan-500',
-      message: 'I need someone to listen without judgment',
-      encouragement: 'Your feelings are valid. Let someone be there for you.'
-    },
-    {
-      id: 'guidance',
-      label: 'Gentle Guidance',
-      icon: Sun,
-      gradient: 'from-emerald-400 to-teal-500',
-      message: 'I could use some gentle guidance',
-      encouragement: 'Asking for help is a sign of strength, not weakness.'
-    },
-    {
-      id: 'presence',
-      label: 'Just Be With Me',
-      icon: Sparkles,
-      gradient: 'from-cyan-400 to-blue-600',
-      message: 'I just need to know someone cares',
-      encouragement: 'You matter. Your presence in this world matters.'
-    }
-  ];
-
-  const asmrSounds = [
-    { id: 'rain', label: 'Gentle Rain', icon: '🌧️' },
-    { id: 'waves', label: 'Ocean Waves', icon: '🌊' },
-    { id: 'breathing', label: 'Calm Breathing', icon: '🫧' },
-    { id: 'heartbeat', label: 'Heartbeat', icon: '💗' }
-  ];
 
   // ALL HOOKS MUST BE DECLARED FIRST - BEFORE ANY CONDITIONAL LOGIC
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [supportNetwork, setSupportNetwork] = useState<SupportPerson[]>([]);
   const [messageTemplate, setMessageTemplate] = useState('');
-  const [reachOutHistory, setReachOutHistory] = useState<ReachOutEvent[]>([]);
+  const [reachOutHistory, setReachOutHistory] = useState<any[]>([]);
   
   // New UI state
   const [selectedMode, setSelectedMode] = useState<any>('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [buttonState, setButtonState] = useState<ButtonState>('ready');
-  const [asmrActive, setAsmrActive] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [showContactManager, setShowContactManager] = useState(false);
-  const [showAddContact, setShowAddContact] = useState(false);
-  const [newContact, setNewContact] = useState({ name: '', phoneNumber: '', relationship: '' });
   const [countdown, setCountdown] = useState(0);
 
   // ALL useEffect hooks MUST also be called before any conditional returns
@@ -217,80 +161,7 @@ const Index = () => {
     });
   };
 
-  const handleReachOut = async (contacts: SupportPerson[], message: string) => {
-    try {
-      // Call the Supabase edge function to send actual messages
-      const { data, error } = await supabase.functions.invoke('send-support-message', {
-        body: {
-          contacts: contacts,
-          message: message,
-          senderName: 'Someone who needs support'
-        }
-      });
 
-      if (error) {
-        console.error('Error sending messages:', error);
-        throw error;
-      }
-
-      console.log('Messages sent successfully:', data);
-
-      // Record this reach-out event
-      const newEvent: ReachOutEvent = {
-        timestamp: new Date(),
-        contactsNotified: contacts.map(c => c.name),
-        message: message
-      };
-
-      setReachOutHistory(prev => [newEvent, ...prev].slice(0, 10));
-
-    } catch (error) {
-      console.error('Failed to send support messages:', error);
-      throw error;
-    }
-  };
-
-  const handleEmergencyHelp = () => {
-    setSelectedMode({
-      id: 'emergency',
-      label: 'Immediate Help',
-      icon: AlertCircle,
-      gradient: 'from-red-500 to-red-600',
-      message: 'I need immediate support. This is urgent.',
-      encouragement: "Help is on the way. You're brave for reaching out."
-    });
-    setShowConfirmation(true);
-  };
-
-  const addContact = () => {
-    if (newContact.name && newContact.phoneNumber) {
-      const contact: SupportPerson = {
-        id: Date.now().toString(),
-        name: newContact.name.trim(),
-        phoneNumber: newContact.phoneNumber.trim(),
-        relationship: newContact.relationship.trim() || undefined,
-        isActive: true
-      };
-      
-      setSupportNetwork([...supportNetwork, contact]);
-      setNewContact({ name: '', phoneNumber: '', relationship: '' });
-      setShowAddContact(false);
-      
-      toast({
-        title: "Support person added",
-        description: `${contact.name} is now in your network.`,
-        className: "bg-accent text-accent-foreground",
-      });
-    }
-  };
-
-  const deleteContact = (id: string) => {
-    setSupportNetwork(supportNetwork.filter(c => c.id !== id));
-    toast({
-      title: "Contact removed",
-      description: "They've been removed from your support network.",
-    });
-  };
 
   const sendConnection = async () => {
     if (!user) {
@@ -340,7 +211,7 @@ const Index = () => {
       const messageToSend = selectedMode.message || messageTemplate;
 
       // Create notifications for each support member
-      const notifications = supportMembers.map(member => ({
+      const notifications = supportMembers.map((member: any) => ({
         recipient_id: member.supporter_id,
         sender_id: user.id,
         type: 'support_request',
@@ -413,32 +284,14 @@ const Index = () => {
 
       <div className="max-w-md mx-auto relative z-10">
         {/* Header with Controls */}
-        <div className="flex justify-between items-start mb-6 pt-8">
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
+        <div className="flex justify-between items-center mb-6 pt-6">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
               You're Safe Here
             </h1>
-            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} text-lg`}>Take a deep breath. We're here for you.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <NotificationBell />
-            {/* Compact Crisis Button in header */}
-            <CrisisButton userId={user?.id || ''} variant="compact" showStatus={false} />
-            <Link 
-              to="/crisis-alert" 
-              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-red-100 text-red-600 hover:text-red-700"
-              title="Send Crisis Alert"
-            >
-              <AlertCircle className="h-4 w-4" />
-              Crisis Alert
-            </Link>
-            <Link 
-              to="/settings" 
-              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
-            >
-              <SettingsIcon className="h-4 w-4" />
-              Settings
-            </Link>
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
@@ -455,55 +308,18 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Welcome message */}
+        <p className={`text-center ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-6`}>
+          Take a deep breath. We're here for you.
+        </p>
+
         {/* Crisis Button - Emergency variant */}
         <div className="mb-6">
           <CrisisButton userId={user?.id || ''} variant="emergency" />
         </div>
 
-        {/* Manage Support Contacts Button */}
-        <button
-          onClick={() => navigate('/settings?tab=network')}
-          className={`w-full mb-3 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
-        >
-          <Users className="w-5 h-5 mr-2" />
-          Manage Support Contacts
-        </button>
-
-        {/* SMS Testing & Management Button */}
-        <button
-          onClick={() => navigate('/sms-testing')}
-          className={`w-full mb-6 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
-        >
-          <MessageSquare className="w-5 h-5 mr-2" />
-          SMS Testing & Management
-        </button>
-
-        {/* ASMR Controls */}
-        <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-4 mb-6`}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center">
-              <Headphones className="w-5 h-5 text-teal-600 mr-2" />
-              <span className={`text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Calming Sounds</span>
-            </div>
-            <Volume2 className={`w-5 h-5 ${asmrActive ? 'text-teal-600' : darkMode ? 'text-gray-600' : 'text-gray-400'}`} />
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            {asmrSounds.map((sound) => (
-              <button
-                key={sound.id}
-                onClick={() => setAsmrActive(!asmrActive)}
-                className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gradient-to-br from-teal-50 to-blue-50 hover:from-teal-100 hover:to-blue-100'} 
-                  transition-all flex flex-col items-center text-center`}
-              >
-                <span className="text-2xl mb-1">{sound.icon}</span>
-                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{sound.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Main Content Area */}
-        {!showConfirmation && !showContactManager ? (
+        {!showConfirmation ? (
           <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-6`}>
             <h2 className={`text-xl font-semibold text-center mb-2 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               How can we support you today?
@@ -511,6 +327,13 @@ const Index = () => {
             <p className={`text-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-6 text-sm`}>
               Remember: reaching out is an act of self-love
             </p>
+            
+            {/* Quick stats */}
+            <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-teal-50/50'}`}>
+              <p className={`text-sm text-center ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                {supportNetwork.filter((c: SupportPerson) => c.isActive).length} active contacts ready to support you
+              </p>
+            </div>
             
             <div className="grid grid-cols-2 gap-4">
               {supportModes.map((mode) => {
@@ -529,100 +352,6 @@ const Index = () => {
                 );
               })}
             </div>
-          </div>
-        ) : showContactManager ? (
-          /* Contact Manager */
-          <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-6`}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className={`text-xl font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>Support Contacts</h3>
-              <button onClick={() => setShowContactManager(false)}>
-                <X className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-              </button>
-            </div>
-
-            {/* Contact List */}
-            <div className="space-y-3 mb-4">
-              {supportNetwork.map(contact => (
-                <div key={contact.id} className={`p-3 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg`}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>{contact.name}</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} flex items-center mt-1`}>
-                        <Phone className="w-3 h-3 mr-1" /> {contact.phoneNumber}
-                      </p>
-                      {contact.relationship && (
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {contact.relationship}
-                        </p>
-                      )}
-                    </div>
-                    <button onClick={() => deleteContact(contact.id)}>
-                      <Trash2 className={`w-4 h-4 ${darkMode ? 'text-red-400' : 'text-red-500'}`} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Add Contact Form */}
-            {showAddContact ? (
-              <div className={`p-4 ${darkMode ? 'bg-gray-700' : 'bg-teal-50'} rounded-lg`}>
-                <Input
-                  type="text"
-                  placeholder="Contact Name *"
-                  value={newContact.name}
-                  onChange={(e) => setNewContact({...newContact, name: e.target.value})}
-                  className={`w-full p-2 mb-2 rounded ${darkMode ? 'bg-gray-600 text-white' : 'bg-white'}`}
-                />
-                <Input
-                  type="tel"
-                  placeholder="Phone Number *"
-                  value={newContact.phoneNumber}
-                  onChange={(e) => setNewContact({...newContact, phoneNumber: e.target.value})}
-                  className={`w-full p-2 mb-2 rounded ${darkMode ? 'bg-gray-600 text-white' : 'bg-white'}`}
-                />
-                <Input
-                  type="text"
-                  placeholder="Relationship (optional)"
-                  value={newContact.relationship}
-                  onChange={(e) => setNewContact({...newContact, relationship: e.target.value})}
-                  className={`w-full p-2 mb-2 rounded ${darkMode ? 'bg-gray-600 text-white' : 'bg-white'}`}
-                />
-                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>
-                  * Name and phone number required
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={addContact}
-                    className="flex-1 bg-gradient-to-r from-teal-500 to-blue-500 text-white py-2 rounded-lg"
-                  >
-                    Save Contact
-                  </Button>
-                  <Button
-                    onClick={() => { setShowAddContact(false); setNewContact({ name: '', phoneNumber: '', relationship: '' }); }}
-                    className={`flex-1 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'} py-2 rounded-lg`}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <Button
-                  onClick={() => setShowAddContact(true)}
-                  className="w-full bg-gradient-to-r from-teal-500 to-blue-500 text-white py-3 rounded-lg"
-                >
-                  Add New Contact
-                </Button>
-                <Button
-                  onClick={() => setShowSettings(true)}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Advanced Settings
-                </Button>
-              </div>
-            )}
           </div>
         ) : (
           /* Confirmation Screen */
@@ -692,14 +421,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Test Section - for development/testing */}
-        {user && (
-          <div className="mt-8 space-y-8">
-            <SupportRequestTest />
-            <SMSTest />
-            <TestNotifications />
-          </div>
-        )}
 
         {/* Footer */}
         <div className="mt-8 text-center">
