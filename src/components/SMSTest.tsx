@@ -7,8 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ValidatedPhoneInput } from '@/components/PhoneInput';
 import { useSMS, getSMSStatus } from '@/lib/sms';
-import { validatePhoneNumber, formatPhoneForSMS } from '@/lib/phoneUtils';
-import { toast } from 'sonner';
+import { formatPhoneForSMS } from '@/lib/phoneUtils';
+import { useToast } from '@/hooks/use-toast';
 import { Phone, MessageSquare, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 export function SMSTest() {
@@ -19,20 +19,33 @@ export function SMSTest() {
   const [userId, setUserId] = useState('test-user-id');
 
   const smsStatus = getSMSStatus();
+  const { toast } = useToast();
 
   const handleTest = async () => {
     if (!testPhone) {
-      toast.error('Please enter a phone number');
+      toast({
+        title: 'Error',
+        description: 'Please enter a phone number',
+        variant: 'destructive',
+      });
       return;
     }
-    
+
     if (!phoneValid) {
-      toast.error('Please enter a valid phone number');
+      toast({
+        title: 'Invalid phone number',
+        description: 'Please enter a valid phone number',
+        variant: 'destructive',
+      });
       return;
     }
-    
+
     if (!testMessage) {
-      toast.error('Please enter a message');
+      toast({
+        title: 'Error',
+        description: 'Please enter a message',
+        variant: 'destructive',
+      });
       return;
     }
     
@@ -41,12 +54,22 @@ export function SMSTest() {
     
     if (result.success) {
       if (result.mock) {
-        toast.success('🧪 Mock SMS sent successfully! (Check console for details)');
+        toast({
+          title: 'Mock SMS sent',
+          description: 'Check console for details',
+        });
       } else {
-        toast.success('✅ Real SMS sent successfully!');
+        toast({
+          title: 'SMS sent',
+          description: 'Message sent successfully',
+        });
       }
     } else {
-      toast.error(`❌ SMS failed: ${result.error}`);
+      toast({
+        title: 'SMS failed',
+        description: result.error,
+        variant: 'destructive',
+      });
     }
   };
 
