@@ -367,6 +367,14 @@ const Index = () => {
             {/* Compact Crisis Button in header */}
             <CrisisButton userId={user?.id || ''} variant="compact" showStatus={false} />
             <Link 
+              to="/crisis-alert" 
+              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-red-100 text-red-600 hover:text-red-700"
+              title="Send Crisis Alert"
+            >
+              <AlertCircle className="h-4 w-4" />
+              Crisis Alert
+            </Link>
+            <Link 
               to="/settings" 
               className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
             >
