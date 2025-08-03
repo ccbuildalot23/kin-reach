@@ -10,6 +10,7 @@ import NotificationSettings from "./pages/NotificationSettings";
 import ProfileSettings from "./pages/ProfileSettings";
 import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import CrisisAlert from "./pages/CrisisAlert";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
           <Route path="/settings/profile" element={<ProfileSettings />} />
+          <Route path="/crisis-alert" element={<CrisisAlert />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
