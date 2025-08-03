@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Sparkles, Phone, MessageCircle, Headphones, Volume2, Feather, Sun, Moon, Plus, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut, Settings as SettingsIcon } from 'lucide-react';
+import { Heart, Sparkles, Phone, MessageSquare, Headphones, Volume2, Feather, Sun, Moon, Users, X, Mail, Edit2, Trash2, AlertCircle, CheckCircle, Send, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
@@ -393,21 +393,21 @@ const Index = () => {
           <CrisisButton userId={user?.id || ''} variant="emergency" />
         </div>
 
-        {/* Contact Manager Button */}
+        {/* Manage Support Contacts Button */}
         <button
-          onClick={() => setShowContactManager(true)}
+          onClick={() => navigate('/settings?tab=network')}
           className={`w-full mb-3 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Users className="w-5 h-5 mr-2" />
           Manage Support Contacts
         </button>
 
-        {/* SMS Test Button */}
+        {/* SMS Testing & Management Button */}
         <button
           onClick={() => navigate('/sms-test')}
           className={`w-full mb-6 ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white/80'} backdrop-blur-sm rounded-xl p-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
         >
-          <MessageCircle className="w-5 h-5 mr-2" />
+          <MessageSquare className="w-5 h-5 mr-2" />
           SMS Testing & Management
         </button>
 
