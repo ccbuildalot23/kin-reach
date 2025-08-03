@@ -84,7 +84,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
 }
 
 // Crisis alert function using your existing database structure
-export async function sendCrisisAlert(userId: string) {
+export async function sendCrisisAlert(userId: string, customMessage?: string) {
   try {
     console.log(`🚨 Crisis alert triggered for user: ${userId}`);
 
@@ -105,7 +105,8 @@ export async function sendCrisisAlert(userId: string) {
       throw new Error('No emergency contacts configured');
     }
 
-    const message = `🚨 CRISIS ALERT: Your contact needs immediate support. Please reach out to them right away. If this is an emergency, call 911. Sent from Recovery App.`;
+    const message = customMessage ||
+      `🚨 CRISIS ALERT: Your contact needs immediate support. Please reach out to them right away. If this is an emergency, call 911. Sent from Recovery App.`;
 
     // Send SMS to all emergency contacts
     const smsPromises = contacts.map(contact => 
