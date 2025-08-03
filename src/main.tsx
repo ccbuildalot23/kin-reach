@@ -3,8 +3,8 @@ import App from './App.tsx'
 import './index.css'
 import { supabase } from "@/integrations/supabase/client";
 
-// Add this line to make supabase available in console for testing
-if (process.env.NODE_ENV === 'development') {
+// Make supabase available in browser console for testing
+if (typeof window !== 'undefined') {
   (window as any).supabase = supabase;
 }
 
