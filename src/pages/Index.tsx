@@ -4,6 +4,7 @@ import { Heart, Sparkles, Phone, MessageSquare, Headphones, Volume2, Feather, Su
 import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { Settings } from "@/components/Settings";
 import { SMSTest } from "@/components/SMSTest";
+import { TestNotifications } from "@/components/TestNotifications";
 import { CrisisButton } from "@/components/CrisisButton";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -627,8 +628,9 @@ const Index = () => {
 
         {/* SMS Test Section - for development/testing */}
         {user && (
-          <div className="mt-8">
+          <div className="mt-8 space-y-8">
             <SMSTest />
+            <TestNotifications />
           </div>
         )}
 
