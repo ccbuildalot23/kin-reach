@@ -3443,7 +3443,7 @@ export type Database = {
           recovery_type: string | null
           timezone: string | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           allow_contact_from?: string | null
@@ -3466,7 +3466,7 @@ export type Database = {
           recovery_type?: string | null
           timezone?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           allow_contact_from?: string | null
@@ -3489,7 +3489,7 @@ export type Database = {
           recovery_type?: string | null
           timezone?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -5672,6 +5672,7 @@ export type Database = {
         Row: {
           assigned_at: string | null
           assigned_by: string | null
+          created_at: string
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -5679,6 +5680,7 @@ export type Database = {
         Insert: {
           assigned_at?: string | null
           assigned_by?: string | null
+          created_at?: string
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -5686,6 +5688,7 @@ export type Database = {
         Update: {
           assigned_at?: string | null
           assigned_by?: string | null
+          created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
