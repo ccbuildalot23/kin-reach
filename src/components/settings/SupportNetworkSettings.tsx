@@ -291,23 +291,46 @@ export function SupportNetworkSettings() {
             )}
           </div>
 
-          <Button
-            onClick={searchUser}
-            disabled={loading || !searchQuery.trim()}
-            className="w-full"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Searching...
-              </>
-            ) : (
-              <>
-                <Search className="mr-2 h-4 w-4" />
-                Search and Add
-              </>
-            )}
-          </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Button
+              onClick={searchUser}
+              disabled={loading || !searchQuery.trim()}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <Search className="mr-2 h-4 w-4" />
+                  Search and Add
+                </>
+              )}
+            </Button>
+
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                const message = encodeURIComponent(
+                  "Hi! I'd like to invite you to join our recovery support app. It helps us stay connected and support each other on our recovery journey."
+                );
+                if (searchBy === 'phone') {
+                  window.open(`sms:${searchQuery}?body=${message}`);
+                } else {
+                  window.location.href = `mailto:${searchQuery}?subject=Join Our Recovery Support Network&body=${message}`;
+                }
+              }} 
+              disabled={!searchQuery.trim()}
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Send Invite
+            </Button>
+          </div>
+          
+          <p className="text-sm text-muted-foreground">
+            Can't find someone? Use "Send Invite" to invite them to join the app first.
+          </p>
         </CardContent>
       </Card>
 

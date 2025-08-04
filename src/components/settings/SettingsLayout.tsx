@@ -5,7 +5,23 @@ import { RecoverySettings } from "./RecoverySettings";
 import { NotificationPreferences } from "../notifications/NotificationPreferences";
 import { SupportNetworkSettings } from "./SupportNetworkSettings";
 import { AccountSecurity } from "./AccountSecurity";
-import { User, Shield, Bell, Users, Lock, ArrowLeft, Calendar, Heart, Sparkles } from "lucide-react";
+import { PrivacySettings } from "./PrivacySettings";
+import { AppPreferences } from "./AppPreferences";
+import { HelpAndSupport } from "./HelpAndSupport";
+import { 
+  User, 
+  Shield, 
+  Bell, 
+  Users, 
+  Lock, 
+  ArrowLeft, 
+  Calendar, 
+  Heart, 
+  Sparkles,
+  Eye,
+  Settings,
+  HelpCircle
+} from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { FloatingCrisisButton } from "@/components/FloatingCrisisButton";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,7 +51,7 @@ export function SettingsLayout() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <FloatingCrisisButton />
       
-      <div className="container max-w-4xl mx-auto py-6 space-y-6 px-4">
+      <div className="container max-w-6xl mx-auto py-6 space-y-6 px-4">
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -84,7 +100,7 @@ export function SettingsLayout() {
         )}
 
         <Tabs defaultValue={defaultTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <TabsTrigger value="recovery" className="flex items-center gap-2">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Recovery</span>
@@ -104,6 +120,18 @@ export function SettingsLayout() {
             <TabsTrigger value="security" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               <span className="hidden sm:inline">Safety</span>
+            </TabsTrigger>
+            <TabsTrigger value="privacy" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              <span className="hidden sm:inline">Privacy</span>
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              <span className="hidden sm:inline">App</span>
+            </TabsTrigger>
+            <TabsTrigger value="help" className="flex items-center gap-2">
+              <HelpCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Help</span>
             </TabsTrigger>
           </TabsList>
 
@@ -125,6 +153,18 @@ export function SettingsLayout() {
 
           <TabsContent value="security">
             <AccountSecurity />
+          </TabsContent>
+
+          <TabsContent value="privacy">
+            <PrivacySettings />
+          </TabsContent>
+
+          <TabsContent value="preferences">
+            <AppPreferences />
+          </TabsContent>
+
+          <TabsContent value="help">
+            <HelpAndSupport />
           </TabsContent>
         </Tabs>
       </div>
