@@ -221,9 +221,9 @@ export function NotificationBell() {
                   {notifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                      className={"p-3 border-l-4 cursor-pointer hover:bg-gray-50 transition-colors " + 
                         getPriorityColor(notification.priority)
-                      } ${notification.read_at ? 'opacity-60' : ''}`}
+                       + " " + notification.read_at ? 'opacity-60' : '' + ""}
                       onClick={() => {
                         if (!notification.read_at) {
                           markAsRead(notification.id);
@@ -235,9 +235,9 @@ export function NotificationBell() {
                           {getTypeIcon(notification.type)}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium ${
+                          <p className={"text-sm font-medium " + 
                             !notification.read_at ? 'text-gray-900' : 'text-gray-600'
-                          }`}>
+                           + ""}>
                             {notification.title}
                           </p>
                           <p className="text-xs text-gray-600 line-clamp-2 mt-1">

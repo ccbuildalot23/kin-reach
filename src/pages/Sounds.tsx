@@ -180,13 +180,13 @@ const Sounds = () => {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50'} transition-colors duration-300`}>
+    <div className={"min-h-screen " + darkMode ? 'dark bg-gray-900' : 'bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50' + " transition-colors duration-300"}>
       <FloatingCrisisButton userId={user?.id || ''} />
       
       {/* Floating gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute top-20 left-10 w-72 h-72 ${darkMode ? 'bg-gradient-to-br from-purple-700 to-pink-800' : 'bg-gradient-to-br from-purple-200 to-pink-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
-        <div className={`absolute bottom-20 right-10 w-96 h-96 ${darkMode ? 'bg-gradient-to-br from-blue-700 to-cyan-800' : 'bg-gradient-to-br from-blue-200 to-cyan-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
+        <div className={"absolute top-20 left-10 w-72 h-72 " + darkMode ? 'bg-gradient-to-br from-purple-700 to-pink-800' : 'bg-gradient-to-br from-purple-200 to-pink-300' + " rounded-full blur-3xl opacity-30 animate-pulse"}></div>
+        <div className={"absolute bottom-20 right-10 w-96 h-96 " + darkMode ? 'bg-gradient-to-br from-blue-700 to-cyan-800' : 'bg-gradient-to-br from-blue-200 to-cyan-300' + " rounded-full blur-3xl opacity-30 animate-pulse"}></div>
       </div>
 
       <div className="max-w-2xl mx-auto relative z-10 pt-8">
@@ -199,13 +199,13 @@ const Sounds = () => {
                 Peace Library
               </h1>
             </div>
-            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <p className={"" + darkMode ? 'text-gray-300' : 'text-gray-700' + ""}>
               Your personal sanctuary of calm 💙
             </p>
           </div>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
+            className={"p-2 rounded-lg " + darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700' + " shadow-md"}
           >
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
@@ -213,16 +213,16 @@ const Sounds = () => {
 
         {/* Currently Playing */}
         {activeSound && isPlaying && (
-          <Card className={`mb-6 ${darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100'} backdrop-blur-sm border-purple-200`}>
+          <Card className={"mb-6 " + darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100' + " backdrop-blur-sm border-purple-200"}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="text-2xl animate-pulse">{sounds.find(s => s.id === activeSound)?.icon}</div>
                   <div>
-                    <p className={`font-medium ${darkMode ? 'text-gray-200' : 'text-purple-800'}`}>
+                    <p className={"font-medium " + darkMode ? 'text-gray-200' : 'text-purple-800' + ""}>
                       Healing in Progress
                     </p>
-                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-purple-600'}`}>
+                    <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-purple-600' + ""}>
                       {sounds.find(s => s.id === activeSound)?.label}
                     </p>
                   </div>
@@ -253,8 +253,8 @@ const Sounds = () => {
             
             return (
               <div key={category} className="space-y-3">
-                <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-800'} flex items-center gap-2`}>
-                  <Icon className={`w-5 h-5 text-${color}-500`} />
+                <h2 className={"text-xl font-semibold " + darkMode ? 'text-gray-200' : 'text-gray-800' + " flex items-center gap-2"}>
+                  <Icon className={"w-5 h-5 text-" + color + "-500"} />
                   {title}
                 </h2>
                 
@@ -264,24 +264,24 @@ const Sounds = () => {
                     return (
                       <Card
                         key={sound.id}
-                        className={`cursor-pointer transition-all duration-300 ${
+                        className={"cursor-pointer transition-all duration-300 " + 
                           darkMode ? 'bg-gray-800/80 hover:bg-gray-700/80' : 'bg-white/80 hover:bg-white/90'
-                        } backdrop-blur-sm ${
+                         + " backdrop-blur-sm " + 
                           isActive ? 'ring-2 ring-purple-500 shadow-lg transform scale-[1.02]' : ''
-                        } border-l-4 border-l-${color}-400`}
+                         + " border-l-4 border-l-" + color + "-400"}
                         onClick={() => handleSoundToggle(sound.id)}
                       >
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex items-center space-x-3">
-                              <div className={`p-2 rounded-lg bg-gradient-to-br ${sound.color} text-white text-xl`}>
+                              <div className={"p-2 rounded-lg bg-gradient-to-br " + sound.color + " text-white text-xl"}>
                                 {sound.icon}
                               </div>
                               <div>
-                                <h3 className={`font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+                                <h3 className={"font-semibold " + darkMode ? 'text-gray-100' : 'text-gray-800' + ""}>
                                   {sound.label}
                                 </h3>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <p className={"text-xs " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>
                                   {sound.duration}
                                 </p>
                               </div>
@@ -294,7 +294,7 @@ const Sounds = () => {
                               {isActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                             </Button>
                           </div>
-                          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                          <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>
                             {sound.description}
                           </p>
                         </CardContent>
@@ -308,7 +308,7 @@ const Sounds = () => {
         </div>
 
         {/* Recovery Tips */}
-        <Card className={`${darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100'} backdrop-blur-sm border-purple-200`}>
+        <Card className={"" + darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100' + " backdrop-blur-sm border-purple-200"}>
           <CardHeader>
             <CardTitle className={darkMode ? 'text-gray-100' : 'text-purple-800'}>Using Your Peace Library</CardTitle>
             <CardDescription className={darkMode ? 'text-gray-400' : 'text-purple-600'}>
@@ -317,7 +317,7 @@ const Sounds = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-white/70'}`}>
+              <div className={"p-4 rounded-lg " + darkMode ? 'bg-gray-700/50' : 'bg-white/70' + ""}>
                 <h4 className="font-medium text-purple-700 dark:text-purple-400 mb-2">
                   When Cravings Hit:
                 </h4>
@@ -326,7 +326,7 @@ const Sounds = () => {
                 </p>
               </div>
               
-              <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-white/70'}`}>
+              <div className={"p-4 rounded-lg " + darkMode ? 'bg-gray-700/50' : 'bg-white/70' + ""}>
                 <h4 className="font-medium text-blue-700 dark:text-blue-400 mb-2">
                   Can't Sleep?
                 </h4>
@@ -335,7 +335,7 @@ const Sounds = () => {
                 </p>
               </div>
               
-              <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-white/70'}`}>
+              <div className={"p-4 rounded-lg " + darkMode ? 'bg-gray-700/50' : 'bg-white/70' + ""}>
                 <h4 className="font-medium text-red-700 dark:text-red-400 mb-2">
                   Panic Attack?
                 </h4>

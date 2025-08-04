@@ -199,12 +199,12 @@ export const SupportRequestTest = () => {
           <h4 className="font-medium mb-2">Test Results:</h4>
           <div className="space-y-1 text-sm font-mono">
             {results.map((result, index) => (
-              <div key={index} className={`${
+              <div key={index} className={"" + 
                 result.includes('❌') ? 'text-red-600' : 
                 result.includes('✅') ? 'text-green-600' :
                 result.includes('⚠️') ? 'text-yellow-600' :
                 'text-gray-600'
-              }`}>
+               + ""}>
                 {result}
               </div>
             ))}

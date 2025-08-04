@@ -50,7 +50,7 @@ export const CrisisAlertButton: React.FC<CrisisAlertButtonProps> = ({
         variant={variant}
         size={size}
         onClick={() => setShowDialog(true)}
-        className={`${className} font-semibold`}
+        className={"" + className + " font-semibold"}
       >
         <AlertCircle className="mr-2 h-4 w-4" />
         Crisis Alert

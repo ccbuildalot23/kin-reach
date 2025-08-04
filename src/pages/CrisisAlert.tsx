@@ -130,7 +130,7 @@ export function CrisisAlert() {
                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                     }`}
                   >
-                    <Icon className={`h-5 w-5 text-${template.color}-600`} />
+                    <Icon className={"h-5 w-5 text-" + template.color + "-600"} />
                     <span className="font-medium">{template.text}</span>
                   </button>
                 );

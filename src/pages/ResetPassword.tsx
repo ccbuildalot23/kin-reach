@@ -172,13 +172,13 @@ const ResetPassword = () => {
                 <div className="space-y-2 mt-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Password strength:</span>
-                    <span className={`font-medium ${passwordStrength >= 5 ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    <span className={"font-medium " + passwordStrength >= 5 ? 'text-green-600' : 'text-muted-foreground' + ""}>
                       {getStrengthText()}
                     </span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
                     <div 
-                      className={`h-full transition-all duration-300 ${getStrengthColor()}`}
+                      className={"h-full transition-all duration-300 " + getStrengthColor() + ""}
                       style={{ width: `${(passwordStrength / 5) * 100}%` }}
                     />
                   </div>

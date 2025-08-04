@@ -151,11 +151,11 @@ export function SMSTest() {
           </Button>
           
           {lastResult && (
-            <div className={`text-center p-3 rounded-lg ${
+            <div className={"text-center p-3 rounded-lg " + 
               lastResult.success 
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-red-100 text-red-800'
-            }`}>
+             + ""}>
               {lastResult.success ? (
                 <div className="space-y-1">
                   <div className="flex items-center justify-center gap-2">

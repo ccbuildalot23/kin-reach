@@ -312,8 +312,14 @@ const Index = () => {
       
       {/* Floating gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute top-20 left-10 w-72 h-72 ${darkMode ? 'bg-gradient-to-br from-purple-700 to-pink-800' : 'bg-gradient-to-br from-purple-200 to-pink-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
-        <div className={`absolute bottom-20 right-10 w-96 h-96 ${darkMode ? 'bg-gradient-to-br from-blue-700 to-cyan-800' : 'bg-gradient-to-br from-blue-200 to-cyan-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
+        <div className={cn(
+          "absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-30 animate-pulse",
+          darkMode ? "bg-gradient-to-br from-purple-700 to-pink-800" : "bg-gradient-to-br from-purple-200 to-pink-300"
+        )}></div>
+        <div className={cn(
+          "absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse",
+          darkMode ? "bg-gradient-to-br from-blue-700 to-cyan-800" : "bg-gradient-to-br from-blue-200 to-cyan-300"
+        )}></div>
       </div>
 
       <div className="max-w-md mx-auto relative z-10">
@@ -329,13 +335,13 @@ const Index = () => {
             <NotificationBell />
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700'} shadow-md`}
+              className={"p-2 rounded-lg " + darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700' + " shadow-md"}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={signOut}
-              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 text-gray-400 hover:text-red-400' : 'bg-white text-gray-700 hover:text-red-600'} shadow-md transition-colors`}
+              className={"p-2 rounded-lg " + darkMode ? 'bg-gray-800 text-gray-400 hover:text-red-400' : 'bg-white text-gray-700 hover:text-red-600' + " shadow-md transition-colors"}
               title="Sign out"
             >
               <LogOut className="w-5 h-5" />
@@ -345,7 +351,7 @@ const Index = () => {
 
         {/* Recovery Progress Card */}
         {cleanDate && (
-          <Card className={`mb-6 ${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm border-purple-200`}>
+          <Card className={"mb-6 " + darkMode ? 'bg-gray-800/80' : 'bg-white/80' + " backdrop-blur-sm border-purple-200"}>
             <CardContent className="p-6 text-center">
               <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-3" />
               <h2 className="text-4xl font-bold text-purple-600 mb-2">{getDaysClean()}</h2>
@@ -360,8 +366,8 @@ const Index = () => {
         )}
 
         {/* How are you feeling check-in */}
-        <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6`}>
-          <h2 className={`text-xl font-semibold text-center mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+        <div className={"" + darkMode ? 'bg-gray-800/80' : 'bg-white/80' + " backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6"}>
+          <h2 className={"text-xl font-semibold text-center mb-4 " + darkMode ? 'text-gray-100' : 'text-gray-800' + ""}>
             How are you feeling right now?
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -397,8 +403,8 @@ const Index = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6`}>
-          <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+        <div className={"" + darkMode ? 'bg-gray-800/80' : 'bg-white/80' + " backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6"}>
+          <h3 className={"text-lg font-semibold mb-4 " + darkMode ? 'text-gray-100' : 'text-gray-800' + ""}>
             Quick Support
           </h3>
           <div className="space-y-3">
@@ -427,7 +433,7 @@ const Index = () => {
         </div>
 
         {/* Daily Affirmation */}
-        <Card className={`mb-6 ${darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100'} backdrop-blur-sm border-purple-200`}>
+        <Card className={"mb-6 " + darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100' + " backdrop-blur-sm border-purple-200"}>
           <CardContent className="p-6 text-center">
             <Sparkles className="w-8 h-8 text-purple-500 mx-auto mb-3" />
             <p className="text-lg font-medium text-purple-700 dark:text-purple-300 italic">
@@ -453,21 +459,21 @@ const Index = () => {
           </div>
         ) : (
           /* Confirmation Screen */
-          <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl shadow-lg p-8`}>
+          <div className={"" + darkMode ? 'bg-gray-800/80' : 'bg-white/80' + " backdrop-blur-sm rounded-2xl shadow-lg p-8"}>
             {buttonState !== 'sent' ? (
               <>
-                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${selectedMode.gradient}
-                  flex items-center justify-center mx-auto mb-4 animate-pulse`}>
+                <div className={"w-20 h-20 rounded-full bg-gradient-to-br " + selectedMode.gradient + "
+                  flex items-center justify-center mx-auto mb-4 animate-pulse"}>
                   <selectedMode.icon className="w-10 h-10 text-white" />
                 </div>
                 
-                <h3 className={`text-xl font-semibold text-center mb-2 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+                <h3 className={"text-xl font-semibold text-center mb-2 " + darkMode ? 'text-gray-100' : 'text-gray-800' + ""}>
                   You're doing great
                 </h3>
-                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-center mb-2 italic`}>
+                <p className={"" + darkMode ? 'text-gray-400' : 'text-gray-600' + " text-center mb-2 italic"}>
                   "{selectedMode.encouragement}"
                 </p>
-                <p className={`${darkMode ? 'text-gray-300 bg-gray-700' : 'text-gray-700 bg-teal-50'} text-center mb-6 p-3 rounded-lg`}>
+                <p className={"" + darkMode ? 'text-gray-300 bg-gray-700' : 'text-gray-700 bg-teal-50' + " text-center mb-6 p-3 rounded-lg"}>
                   We'll send: "{selectedMode.message}"
                 </p>
                 
@@ -475,8 +481,8 @@ const Index = () => {
                   <Button
                     onClick={sendConnection}
                     disabled={buttonState === 'sending'}
-                    className={`w-full bg-gradient-to-r ${selectedMode.gradient} text-white py-3 rounded-lg
-                      font-medium hover:shadow-lg transition-all transform hover:scale-105 disabled:opacity-50`}
+                    className={"w-full bg-gradient-to-r " + selectedMode.gradient + " text-white py-3 rounded-lg
+                      font-medium hover:shadow-lg transition-all transform hover:scale-105 disabled:opacity-50"}
                   >
                     {buttonState === 'sending' ? (
                       <div className="flex items-center justify-center">
@@ -484,13 +490,13 @@ const Index = () => {
                         Connecting...
                       </div>
                      ) : (
-                       `Send Support Request 💚`
+                       <>Send Support Request 💚</>
                      )}
                   </Button>
                   <Button
                     onClick={() => setShowConfirmation(false)}
-                    className={`w-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'} py-3 rounded-lg
-                      font-medium hover:bg-gray-200 transition-colors`}
+                    className={"w-full " + darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700' + " py-3 rounded-lg
+                      font-medium hover:bg-gray-200 transition-colors"}
                     disabled={buttonState === 'sending'}
                   >
                     Take a moment
@@ -507,11 +513,11 @@ const Index = () => {
                 <h3 className="text-2xl font-semibold mb-3 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
                   Connection sent with care
                 </h3>
-                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Your support network has been notified</p>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} italic mb-4`}>
+                <p className={"" + darkMode ? 'text-gray-300' : 'text-gray-700' + " mb-2"}>Your support network has been notified</p>
+                <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + " italic mb-4"}>
                   Take a deep breath. Help is coming. You're not alone.
                 </p>
-                <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                <p className={"text-sm " + darkMode ? 'text-gray-500' : 'text-gray-500' + ""}>
                   Ready again in {countdown}s
                 </p>
               </div>
@@ -532,7 +538,7 @@ const Index = () => {
                 className: "bg-purple-100 text-purple-900 border-purple-200",
               });
             }}
-            className={`w-full py-4 px-6 rounded-xl ${darkMode ? 'bg-gradient-to-r from-purple-700 to-pink-700' : 'bg-gradient-to-r from-purple-500 to-pink-500'} text-white font-medium hover:shadow-lg transition-all transform hover:scale-105`}
+            className={"w-full py-4 px-6 rounded-xl " + darkMode ? 'bg-gradient-to-r from-purple-700 to-pink-700' : 'bg-gradient-to-r from-purple-500 to-pink-500' + " text-white font-medium hover:shadow-lg transition-all transform hover:scale-105"}
           >
             <Calendar className="w-5 h-5 inline mr-2" />
             I made it through today
@@ -541,7 +547,7 @@ const Index = () => {
 
         {/* Footer */}
         <div className="mt-8 text-center space-y-3">
-          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>
             You are worthy of recovery 💜
           </p>
           <div className="flex flex-col gap-2">

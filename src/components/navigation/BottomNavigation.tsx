@@ -57,17 +57,17 @@ const BottomNavigation = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative
-                ${isActive ? 'text-current' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
+              className={"flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative
+                " + isActive ? 'text-current' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300' + ""}
             >
               {isActive && (
-                <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r ${item.bgGradient} rounded-b-full`} />
+                <div className={"absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r " + item.bgGradient + " rounded-b-full"} />
               )}
               <Icon 
-                className={`w-5 h-5 ${isActive ? item.activeColor : ''}`} 
+                className={"w-5 h-5 " + isActive ? item.activeColor : '' + ""} 
                 strokeWidth={isActive ? 2.5 : 2}
               />
-              <span className={`text-xs font-medium ${isActive ? item.activeColor : ''}`}>
+              <span className={"text-xs font-medium " + isActive ? item.activeColor : '' + ""}>
                 {item.label}
               </span>
             </Link>

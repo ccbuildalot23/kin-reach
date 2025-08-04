@@ -15,6 +15,7 @@ import { CrisisAlert } from "@/pages/CrisisAlert";
 import { SMSTesting } from "@/pages/SMSTesting";
 import Sounds from "./pages/Sounds";
 import Contacts from "./pages/Contacts";
+import { WellnessDisclaimer } from "@/components/WellnessDisclaimer";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AppLayout>
+          <WellnessDisclaimer />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />

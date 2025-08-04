@@ -155,11 +155,11 @@ export function CrisisButton({
             )}
 
             {lastAlert && (
-              <div className={`text-sm p-3 rounded-lg ${
+              <div className={"text-sm p-3 rounded-lg " + 
                 lastAlert.success 
                   ? 'bg-green-100 text-green-800' 
                   : 'bg-red-100 text-red-800'
-              }`}>
+               + ""}>
                 {lastAlert.success ? (
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
@@ -256,11 +256,11 @@ export function CrisisButton({
           )}
 
           {lastAlert && (
-            <div className={`p-3 rounded-lg ${
+            <div className={"p-3 rounded-lg " + 
               lastAlert.success 
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-red-100 text-red-800'
-            }`}>
+             + ""}>
               {lastAlert.success ? (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 font-medium">
