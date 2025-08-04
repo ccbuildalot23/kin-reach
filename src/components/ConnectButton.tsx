@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Send, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface SupportPerson {
   id: string;
@@ -119,14 +120,13 @@ export const ConnectButton = ({ supportNetwork, messageTemplate, onReachOut }: C
       <Button
         onClick={handleReachOut}
         disabled={buttonState === 'sending'}
-        className={"
-          connect-button
-          w-64 h-64 rounded-full text-white text-2xl font-bold
-          flex flex-col items-center justify-center space-y-3
-          border-0 outline-none focus:ring-4 focus:ring-primary/30
-          " + buttonState === 'sending' ? 'sending' : '' + "
-          " + buttonState === 'sent' ? 'sent' : '' + "
-        "}
+        className={cn(
+          "connect-button w-64 h-64 rounded-full text-white text-2xl font-bold",
+          "flex flex-col items-center justify-center space-y-3",
+          "border-0 outline-none focus:ring-4 focus:ring-primary/30",
+          buttonState === 'sending' && 'sending',
+          buttonState === 'sent' && 'sent'
+        )}
       >
         {getButtonIcon()}
         <span>{getButtonText()}</span>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { Users, Phone, Plus, Edit2, Trash2, Moon, Sun, User, Heart, Shield, Sparkles, MessageSquare, Trophy } from 'lucide-react';
+import { Users, Phone, Plus, Edit2, Trash2, Moon, Sun, User, Heart, Shield, Sparkles, MessageSquare, Trophy, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -175,37 +175,37 @@ const Contacts = () => {
                 Your Support Team
               </h1>
             </div>
-            <p className={"" + darkMode ? 'text-gray-300' : 'text-gray-700' + ""}>
+            <p className={cn(darkMode ? 'text-gray-300' : 'text-gray-700')}>
               People who walk this journey with you 💙
             </p>
           </div>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className={"p-2 rounded-lg " + darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700' + " shadow-md"}
+            className={cn("p-2 rounded-lg shadow-md", darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-700')}
           >
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
         </div>
 
         {/* Stats Card */}
-        <Card className={"mb-6 " + darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100' + " backdrop-blur-sm border-purple-200"}>
+        <Card className={cn("mb-6 backdrop-blur-sm border-purple-200", darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100')}>
           <CardContent className="p-6">
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-purple-600">{supportNetwork.filter(c => c.category === 'crisis').length}</div>
-                <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>Crisis Support</p>
+                <p className={cn("text-sm", darkMode ? 'text-gray-400' : 'text-gray-600')}>Crisis Support</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-600">
                   {supportNetwork.filter(c => c.category === 'daily').length}
                 </div>
-                <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>Daily Check-ins</p>
+                <p className={cn("text-sm", darkMode ? 'text-gray-400' : 'text-gray-600')}>Daily Check-ins</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-600">
                   {supportNetwork.filter(c => c.category === 'celebrate').length}
                 </div>
-                <p className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>Celebrate Wins</p>
+                <p className={cn("text-sm", darkMode ? 'text-gray-400' : 'text-gray-600')}>Celebrate Wins</p>
               </div>
             </div>
             {supportNetwork.some(c => c.isSponsor) && (
@@ -325,13 +325,13 @@ const Contacts = () => {
 
         {/* Contacts List */}
         {supportNetwork.length === 0 ? (
-          <Card className={"" + darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100' + " backdrop-blur-sm border-purple-200"}>
+          <Card className={cn("backdrop-blur-sm border-purple-200", darkMode ? 'bg-gray-800/80' : 'bg-gradient-to-br from-purple-100 to-pink-100')}>
             <CardContent className="p-12 text-center">
               <Heart className={"w-16 h-16 mx-auto mb-4 text-purple-400"} />
-              <h3 className={"text-xl font-semibold mb-2 " + darkMode ? 'text-gray-200' : 'text-gray-800' + ""}>
+              <h3 className={cn("text-xl font-semibold mb-2", darkMode ? 'text-gray-200' : 'text-gray-800')}>
                 Build Your Support Team
               </h3>
-              <p className={"" + darkMode ? 'text-gray-400' : 'text-gray-600' + " mb-4"}>
+              <p className={cn("mb-4", darkMode ? 'text-gray-400' : 'text-gray-600')}>
                 Recovery is easier when you're not alone 💙
               </p>
               <p className="text-sm text-purple-600 dark:text-purple-400">
@@ -348,7 +348,7 @@ const Contacts = () => {
               
               return (
                 <div key={category} className="space-y-4">
-                  <h3 className={"text-lg font-semibold " + darkMode ? 'text-gray-200' : 'text-gray-800' + " flex items-center gap-2"}>
+                  <h3 className={cn("text-lg font-semibold flex items-center gap-2", darkMode ? 'text-gray-200' : 'text-gray-800')}>
                     {category === 'crisis' && <>
                       <AlertCircle className="w-5 h-5 text-red-500" />
                       Call When Struggling
@@ -366,24 +366,26 @@ const Contacts = () => {
                   {categoryContacts.map(contact => (
                     <Card 
                       key={contact.id} 
-                      className={"" + darkMode ? 'bg-gray-800/80' : 'bg-white/80' + " backdrop-blur-sm " + 
-                        !contact.isActive ? 'opacity-60' : ''
-                       + " border-l-4 " + 
-                        category === 'crisis' ? 'border-l-red-400' : 
-                        category === 'daily' ? 'border-l-blue-400' : 
-                        'border-l-green-400'
-                       + ""}
+                      className={cn(
+                        "backdrop-blur-sm border-l-4",
+                        darkMode ? 'bg-gray-800/80' : 'bg-white/80',
+                        !contact.isActive && 'opacity-60',
+                        category === 'crisis' && 'border-l-red-400',
+                        category === 'daily' && 'border-l-blue-400',
+                        category === 'celebrate' && 'border-l-green-400'
+                      )}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex items-start space-x-4">
-                            <div className={"p-3 rounded-full " + 
+                            <div className={cn(
+                              "p-3 rounded-full",
                               contact.isActive 
                                 ? category === 'crisis' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
                                   category === 'daily' ? 'bg-gradient-to-br from-blue-400 to-purple-500' :
                                   'bg-gradient-to-br from-green-400 to-emerald-500'
                                 : darkMode ? 'bg-gray-700' : 'bg-gray-200'
-                             + ""}>
+                            )}>
                               {contact.isSponsor ? (
                                 <Sparkles className="w-6 h-6 text-white" />
                               ) : (
@@ -391,7 +393,7 @@ const Contacts = () => {
                               )}
                             </div>
                             <div className="flex-1">
-                              <h3 className={"font-semibold " + darkMode ? 'text-gray-200' : 'text-gray-800' + " flex items-center gap-2"}>
+                              <h3 className={cn("font-semibold flex items-center gap-2", darkMode ? 'text-gray-200' : 'text-gray-800')}>
                                 {contact.name}
                                 {contact.isSponsor && (
                                   <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
@@ -399,7 +401,7 @@ const Contacts = () => {
                                   </span>
                                 )}
                               </h3>
-                              <div className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + " space-y-1 mt-1"}>
+                              <div className={cn("text-sm space-y-1 mt-1", darkMode ? 'text-gray-400' : 'text-gray-600')}>
                                 <p className="flex items-center">
                                   <Phone className="w-3 h-3 mr-1" />
                                   {contact.phoneNumber}
@@ -428,21 +430,21 @@ const Contacts = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDeleteContact(contact.id)}
-                              className={"" + darkMode ? 'hover:bg-gray-700' : '' + " text-red-500 hover:text-red-600"}
+                              className={cn("text-red-500 hover:text-red-600", darkMode && 'hover:bg-gray-700')}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
                         <div className="mt-4 flex items-center justify-between">
-                          <span className={"text-sm " + darkMode ? 'text-gray-400' : 'text-gray-600' + ""}>
+                          <span className={cn("text-sm", darkMode ? 'text-gray-400' : 'text-gray-600')}>
                             {contact.isActive ? '💙 Available' : '💤 Unavailable'}
                           </span>
                           <div className="flex gap-2">
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => window.location.href = `tel:${contact.phoneNumber}`}
+                              onClick={() => window.open('tel:' + contact.phoneNumber)}
                               className="text-green-600 border-green-300 hover:bg-green-50"
                             >
                               <Phone className="w-3 h-3 mr-1" />
@@ -451,7 +453,7 @@ const Contacts = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => window.location.href = `sms:${contact.phoneNumber}`}
+                              onClick={() => window.open('sms:' + contact.phoneNumber)}
                               className="text-blue-600 border-blue-300 hover:bg-blue-50"
                             >
                               <MessageSquare className="w-3 h-3 mr-1" />
