@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { FloatingCrisisButton } from '@/components/FloatingCrisisButton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface SupportPerson {
   id: string;
@@ -146,13 +147,22 @@ const Contacts = () => {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50'} transition-colors duration-300`}>
+    <div className={cn(
+      "min-h-screen transition-colors duration-300",
+      darkMode ? "dark bg-gray-900" : "bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50"
+    )}>
       <FloatingCrisisButton userId={user?.id || ''} />
       
       {/* Floating gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute top-20 left-10 w-72 h-72 ${darkMode ? 'bg-gradient-to-br from-purple-700 to-pink-800' : 'bg-gradient-to-br from-purple-200 to-pink-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
-        <div className={`absolute bottom-20 right-10 w-96 h-96 ${darkMode ? 'bg-gradient-to-br from-blue-700 to-cyan-800' : 'bg-gradient-to-br from-blue-200 to-cyan-300'} rounded-full blur-3xl opacity-30 animate-pulse`}></div>
+        <div className={cn(
+          "absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-30 animate-pulse",
+          darkMode ? "bg-gradient-to-br from-purple-700 to-pink-800" : "bg-gradient-to-br from-purple-200 to-pink-300"
+        )}></div>
+        <div className={cn(
+          "absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse",
+          darkMode ? "bg-gradient-to-br from-blue-700 to-cyan-800" : "bg-gradient-to-br from-blue-200 to-cyan-300"
+        )}></div>
       </div>
 
       <div className="max-w-2xl mx-auto relative z-10 pt-8">

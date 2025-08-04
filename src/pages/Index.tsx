@@ -14,6 +14,7 @@ import { FloatingCrisisButton } from "@/components/FloatingCrisisButton";
 import { BreathingExercise } from "@/components/BreathingExercise";
 import { Card, CardContent } from "@/components/ui/card";
 import { format, differenceInDays } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 interface SupportPerson {
   id: string;
@@ -294,12 +295,15 @@ const Index = () => {
     if (days === 30) return "30 days - Amazing progress!";
     if (days === 90) return "90 days - You're inspiring!";
     if (days === 365) return "1 year - Incredible journey!";
-    if (days > 365) return `${Math.floor(days / 365)} years - Living proof of recovery`;
-    return `${days} days - One day at a time`;
+    if (days > 365) return Math.floor(days / 365) + " years - Living proof of recovery";
+    return days + " days - One day at a time";
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50'} transition-colors duration-300`}>
+    <div className={cn(
+      "min-h-screen transition-colors duration-300",
+      darkMode ? "dark bg-gray-900" : "bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50"
+    )}>
       {/* Floating Crisis Button */}
       <FloatingCrisisButton userId={user?.id || ''} />
       
