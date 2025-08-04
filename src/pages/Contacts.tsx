@@ -135,7 +135,7 @@ const Contacts = () => {
     setSupportNetwork(supportNetwork.filter(c => c.id !== id));
     toast({
       title: "Removed with love",
-      description: `${contact?.name} is no longer in your support team, but the memories remain.",
+      description: `${contact?.name} is no longer in your support team, but the memories remain.`,
       className: "bg-blue-100 text-blue-900 border-blue-200",
     });
   };
