@@ -24,27 +24,27 @@ export function SMSTest() {
   const handleTest = async () => {
     if (!testPhone) {
       toast({
-        title: 'Error',
-        description: 'Please enter a phone number',
-        variant: 'destructive',
+        title: 'Almost ready',
+        description: 'We need a phone number to send to',
+        className: 'bg-amber-100 text-amber-900 border-amber-200',
       });
       return;
     }
 
     if (!phoneValid) {
       toast({
-        title: 'Invalid phone number',
-        description: 'Please enter a valid phone number',
-        variant: 'destructive',
+        title: 'Let\'s check that number',
+        description: 'The phone number needs to be in the right format',
+        className: 'bg-amber-100 text-amber-900 border-amber-200',
       });
       return;
     }
 
     if (!testMessage) {
       toast({
-        title: 'Error',
-        description: 'Please enter a message',
-        variant: 'destructive',
+        title: 'What would you like to say?',
+        description: 'Add a message to send to your support',
+        className: 'bg-amber-100 text-amber-900 border-amber-200',
       });
       return;
     }
@@ -55,20 +55,22 @@ export function SMSTest() {
     if (result.success) {
       if (result.mock) {
         toast({
-          title: 'Mock SMS sent',
-          description: 'Check console for details',
+          title: '🧪 Test message sent',
+          description: 'Your message was simulated successfully',
+          className: 'bg-blue-100 text-blue-900 border-blue-200',
         });
       } else {
         toast({
-          title: 'SMS sent',
-          description: 'Message sent successfully',
+          title: '💙 Message delivered',
+          description: 'Your support has been notified',
+          className: 'bg-green-100 text-green-900 border-green-200',
         });
       }
     } else {
       toast({
-        title: 'SMS failed',
-        description: result.error,
-        variant: 'destructive',
+        title: 'Let\'s try again',
+        description: result.error || 'Sometimes messages need a second attempt',
+        className: 'bg-amber-100 text-amber-900 border-amber-200',
       });
     }
   };
@@ -174,7 +176,7 @@ export function SMSTest() {
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <AlertTriangle className="w-4 h-4" />
-                  Failed: {lastResult.error}
+                  Message needs another try: {lastResult.error}
                 </div>
               )}
             </div>

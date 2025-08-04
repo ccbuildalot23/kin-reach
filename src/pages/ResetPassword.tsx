@@ -29,9 +29,9 @@ const ResetPassword = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Invalid or expired link",
-          description: "Please request a new password reset link.",
-          variant: "destructive",
+          title: "Let's try again",
+          description: "This link has expired. Request a new one to continue.",
+          className: "bg-amber-100 text-amber-900 border-amber-200",
         });
         navigate('/auth');
       }
@@ -60,18 +60,18 @@ const ResetPassword = () => {
     
     if (password !== confirmPassword) {
       toast({
-        title: "Passwords don't match",
-        description: "Please ensure both passwords are identical.",
-        variant: "destructive",
+        title: "Almost there",
+        description: "The passwords need to match. Give it another try.",
+        className: "bg-amber-100 text-amber-900 border-amber-200",
       });
       return;
     }
 
     if (passwordStrength < 5) {
       toast({
-        title: "Password not strong enough",
-        description: "Please meet all password requirements for your security.",
-        variant: "destructive",
+        title: "Let's make it stronger",
+        description: "A strong password helps keep your recovery journey safe.",
+        className: "bg-amber-100 text-amber-900 border-amber-200",
       });
       return;
     }
@@ -104,9 +104,9 @@ const ResetPassword = () => {
       }, 2000);
     } catch (error: any) {
       toast({
-        title: "Unable to update password",
-        description: error.message,
-        variant: "destructive",
+        title: "Let's try again",
+        description: "Something went wrong. Give it another try.",
+        className: "bg-amber-100 text-amber-900 border-amber-200",
       });
     } finally {
       setLoading(false);
@@ -114,9 +114,9 @@ const ResetPassword = () => {
   };
 
   const getStrengthColor = () => {
-    if (passwordStrength <= 2) return 'bg-destructive';
-    if (passwordStrength <= 4) return 'bg-warning';
-    return 'bg-success';
+    if (passwordStrength <= 2) return 'bg-amber-500';
+    if (passwordStrength <= 4) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
   const getStrengthText = () => {
@@ -172,7 +172,7 @@ const ResetPassword = () => {
                 <div className="space-y-2 mt-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Password strength:</span>
-                    <span className={`font-medium ${passwordStrength >= 5 ? 'text-success' : 'text-muted-foreground'}`}>
+                    <span className={`font-medium ${passwordStrength >= 5 ? 'text-green-600' : 'text-muted-foreground'}`}>
                       {getStrengthText()}
                     </span>
                   </div>
@@ -193,11 +193,11 @@ const ResetPassword = () => {
                     }).map(([key, label]) => (
                       <div key={key} className="flex items-center text-xs">
                         {passwordRequirements[key as keyof typeof passwordRequirements] ? (
-                          <CheckCircle className="w-3 h-3 text-success mr-2" />
+                          <CheckCircle className="w-3 h-3 text-green-600 mr-2" />
                         ) : (
                           <AlertCircle className="w-3 h-3 text-muted-foreground mr-2" />
                         )}
-                        <span className={passwordRequirements[key as keyof typeof passwordRequirements] ? 'text-success' : 'text-muted-foreground'}>
+                        <span className={passwordRequirements[key as keyof typeof passwordRequirements] ? 'text-green-600' : 'text-muted-foreground'}>
                           {label}
                         </span>
                       </div>
@@ -221,7 +221,7 @@ const ResetPassword = () => {
                 required
               />
               {confirmPassword && password !== confirmPassword && (
-                <p className="text-xs text-destructive mt-1">Passwords don't match</p>
+                <p className="text-xs text-amber-600 mt-1">The passwords need to match</p>
               )}
             </div>
 

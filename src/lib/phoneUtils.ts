@@ -82,7 +82,7 @@ export function validatePhoneNumber(phone: string): {
   formatted?: string;
 } {
   if (!phone || phone.trim() === '') {
-    return { isValid: false, error: 'Phone number is required' };
+    return { isValid: false, error: 'We need a phone number to continue' };
   }
 
   const cleaned = cleanPhoneNumber(phone);
@@ -91,7 +91,7 @@ export function validatePhoneNumber(phone: string): {
   if (cleaned.length === 10) {
     // Standard 10-digit US number
     if (cleaned.startsWith('0') || cleaned.startsWith('1')) {
-      return { isValid: false, error: 'US phone numbers cannot start with 0 or 1' };
+      return { isValid: false, error: 'Phone numbers cannot start with 0 or 1' };
     }
     
     return { 
@@ -104,7 +104,7 @@ export function validatePhoneNumber(phone: string): {
     // 11-digit with country code
     const localNumber = cleaned.slice(1);
     if (localNumber.startsWith('0') || localNumber.startsWith('1')) {
-      return { isValid: false, error: 'US phone numbers cannot start with 0 or 1' };
+      return { isValid: false, error: 'Phone numbers cannot start with 0 or 1' };
     }
     
     return { 
@@ -115,14 +115,14 @@ export function validatePhoneNumber(phone: string): {
   
   // Invalid length
   if (cleaned.length < 10) {
-    return { isValid: false, error: 'Phone number is too short' };
+    return { isValid: false, error: 'This number seems too short' };
   }
   
   if (cleaned.length > 11) {
-    return { isValid: false, error: 'Phone number is too long' };
+    return { isValid: false, error: 'This number seems too long' };
   }
   
-  return { isValid: false, error: 'Invalid phone number format' };
+  return { isValid: false, error: 'Let\'s check that phone number format' };
 }
 
 // Format phone number as user types (for input fields)

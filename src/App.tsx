@@ -34,6 +34,9 @@ const App = () => (
             <Route path="/settings/notifications" element={<NotificationSettings />} />
             <Route path="/settings/profile" element={<ProfileSettings />} />
             <Route path="/crisis-alert" element={<CrisisAlert />} />
+            <Route path="/peace-library" element={<Sounds />} />
+            <Route path="/support-team" element={<Contacts />} />
+            {/* Legacy routes for backward compatibility */}
             <Route path="/sounds" element={<Sounds />} />
             <Route path="/contacts" element={<Contacts />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

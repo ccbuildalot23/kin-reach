@@ -13,7 +13,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
     const validation = validatePhoneUtil(phoneNumber);
     if (!validation.isValid) {
       console.error(`❌ Invalid phone number: ${validation.error}`);
-      return { success: false, error: `Invalid phone number: ${validation.error}` };
+      return { success: false, error: `Let's check that phone number format` };
     }
 
     const formattedPhone = formatPhoneForSMS(phoneNumber);
@@ -51,7 +51,7 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
 
     if (error) {
       console.error('❌ SMS error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: 'Unable to send message right now' };
     }
 
     if (data?.success) {
@@ -75,11 +75,11 @@ export async function sendSMS(phoneNumber: string, message: string, userId?: str
       return { success: true, messageId: data.messageId };
     } else {
       console.error('❌ SMS failed:', data);
-      return { success: false, error: data?.error || 'Unknown error' };
+      return { success: false, error: 'Message needs another try' };
     }
   } catch (error) {
     console.error('❌ SMS exception:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Unable to send message' };
   }
 }
 
@@ -97,12 +97,12 @@ export async function sendCrisisAlert(userId: string, customMessage?: string) {
 
     if (contactsError) {
       console.error('❌ Error fetching crisis contacts:', contactsError);
-      throw new Error('Could not fetch emergency contacts');
+      throw new Error('Unable to reach your support team');
     }
 
     if (!contacts?.length) {
       console.log('⚠️ No emergency contacts found');
-      throw new Error('No emergency contacts configured');
+      throw new Error('Please add support contacts first');
     }
 
     const message = customMessage ||
@@ -227,7 +227,7 @@ export async function sendNotificationSMS(
 
   } catch (error) {
     console.error('❌ Notification SMS failed:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Unable to send message' };
   }
 }
 

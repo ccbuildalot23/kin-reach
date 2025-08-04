@@ -106,9 +106,9 @@ export const ProfileSettings: React.FC = () => {
     // Validate required fields
     if (!profile.display_name || !profile.phone) {
       toast({
-        title: 'Required Fields',
-        description: 'Please fill in your name and phone number',
-        variant: 'destructive',
+        title: 'Almost there!',
+        description: 'We need your name and phone to support you better',
+        className: 'bg-amber-100 text-amber-900 border-amber-200',
       });
       setSaving(false);
       return;
@@ -132,8 +132,9 @@ export const ProfileSettings: React.FC = () => {
       });
     } else {
       toast({
-        title: 'Success',
-        description: 'Your profile has been updated',
+        title: '💙 Changes saved',
+        description: 'Your recovery profile is updated',
+        className: 'bg-green-100 text-green-900 border-green-200',
       });
     }
     setSaving(false);
@@ -162,10 +163,16 @@ export const ProfileSettings: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Profile & Settings</h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center gap-3 mb-8">
+          <Sparkles className="w-8 h-8 text-purple-500" />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Your Recovery Profile
+          </h1>
+        </div>
 
-      <Tabs defaultValue="profile" className="space-y-6">
+        <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="recovery">Recovery</TabsTrigger>
@@ -197,7 +204,7 @@ export const ProfileSettings: React.FC = () => {
                     Change Photo
                   </Button>
                   <p className="text-xs text-muted-foreground">
-                    Recommended: A clear photo helps sponsors and peers recognize you
+                    A photo helps your support team recognize you 💙
                   </p>
                 </div>
               </div>
@@ -214,7 +221,7 @@ export const ProfileSettings: React.FC = () => {
                   placeholder="How you want to be known in the app"
                 />
                 <p className="text-xs text-muted-foreground">
-                  This is how you'll appear to others in the recovery community
+                  How your support team will see you
                 </p>
               </div>
 
@@ -229,7 +236,7 @@ export const ProfileSettings: React.FC = () => {
                   placeholder="(555) 123-4567"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Required for crisis alerts and SMS notifications
+                  So we can reach you when you need support
                 </p>
               </div>
 
@@ -510,6 +517,7 @@ export const ProfileSettings: React.FC = () => {
             )}
           </Button>
         </div>
+      </div>
       </div>
     </div>
   );

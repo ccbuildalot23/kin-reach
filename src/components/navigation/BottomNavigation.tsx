@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, AlertCircle, Headphones, Users, Settings } from 'lucide-react';
+import { Home, AlertCircle, Heart, Users, Settings, Sparkles } from 'lucide-react';
 
 const BottomNavigation = () => {
   const location = useLocation();
@@ -10,36 +10,36 @@ const BottomNavigation = () => {
       path: '/',
       icon: Home,
       label: 'Home',
-      activeColor: 'text-teal-600',
-      bgGradient: 'from-teal-400 to-blue-500'
+      activeColor: 'text-purple-600',
+      bgGradient: 'from-purple-400 to-pink-500'
     },
     {
       path: '/crisis-alert',
       icon: AlertCircle,
-      label: 'Crisis',
+      label: 'Help Now',
       activeColor: 'text-red-600',
-      bgGradient: 'from-red-400 to-red-600'
+      bgGradient: 'from-red-400 to-pink-500'
     },
     {
-      path: '/sounds',
-      icon: Headphones,
-      label: 'Sounds',
+      path: '/peace-library',
+      icon: Heart,
+      label: 'Peace',
       activeColor: 'text-purple-600',
       bgGradient: 'from-purple-400 to-purple-600'
     },
     {
-      path: '/contacts',
+      path: '/support-team',
       icon: Users,
-      label: 'Contacts',
+      label: 'Support',
       activeColor: 'text-blue-600',
-      bgGradient: 'from-blue-400 to-blue-600'
+      bgGradient: 'from-blue-400 to-purple-500'
     },
     {
       path: '/settings',
-      icon: Settings,
-      label: 'Settings',
-      activeColor: 'text-gray-600',
-      bgGradient: 'from-gray-400 to-gray-600'
+      icon: Sparkles,
+      label: 'Recovery',
+      activeColor: 'text-purple-600',
+      bgGradient: 'from-purple-400 to-pink-500'
     }
   ];
 
@@ -49,7 +49,9 @@ const BottomNavigation = () => {
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
-                          (item.path === '/settings' && location.pathname.startsWith('/settings'));
+                          (item.path === '/settings' && location.pathname.startsWith('/settings')) ||
+                          (item.path === '/peace-library' && location.pathname === '/sounds') ||
+                          (item.path === '/support-team' && location.pathname === '/contacts');
           
           return (
             <Link

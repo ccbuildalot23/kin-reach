@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { CrisisButton } from '@/components/CrisisButton';
 import { auditLogger } from '@/lib/auditLogger';
-import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { Heart, Mail, Lock, User, Calendar, MessageSquare, AlertTriangle, Volume2, VolumeX, Sparkles, Shield } from 'lucide-react';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -295,10 +295,10 @@ const Auth = () => {
               Serenity
             </h1>
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              {isSignUp ? 'Begin Your Journey to Peace' : 'Welcome Back to Your Sanctuary'}
+              {isSignUp ? 'Join Our Recovery Community' : 'Welcome Back, Friend'}
             </h2>
             <p className="text-muted-foreground mt-2 max-w-sm mx-auto leading-relaxed">
-              {isSignUp ? 'Create your personal haven where healing begins and support surrounds you' : 'Return to your safe space where calm awaits and your support network stands ready'}
+              {isSignUp ? 'Take the first brave step toward healing. You belong here.' : 'Your safe space is ready. We\'ve been waiting for you.'}
             </p>
           </div>
 
@@ -432,10 +432,11 @@ const Auth = () => {
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <span className="animate-pulse">Finding your peace...</span>
+                  <Heart className="w-4 h-4 mr-2 animate-pulse" />
+                  <span className="animate-pulse">Opening your safe space...</span>
                 </span>
               ) : (
-                isSignUp ? 'Begin Your Journey' : 'Enter Your Sanctuary'
+                isSignUp ? 'Join Our Community' : 'Welcome Back'
               )}
             </Button>
 
@@ -462,7 +463,7 @@ const Auth = () => {
               }}
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              {isSignUp ? 'Already on your journey? Sign in' : "Ready to begin? Create your sanctuary"}
+              {isSignUp ? 'Already part of our community? Welcome back' : "New to recovery? Join us"}
             </button>
           </div>
 
@@ -470,8 +471,8 @@ const Auth = () => {
           <div className="mt-6 space-y-4">
             <div className="text-center text-sm text-muted-foreground">
               <p className="flex items-center justify-center gap-2">
-                <Lock className="w-3 h-3" />
-                Your peace of mind is protected with HIPAA-compliant security
+                <Shield className="w-3 h-3" />
+                Your recovery is protected with HIPAA-compliant security
               </p>
             </div>
             
@@ -509,6 +510,15 @@ const Auth = () => {
             <CrisisButton userId="anonymous" variant="compact" showStatus={false} />
           </div>
           
+          <div className="text-center">
+            <button
+              onClick={() => toast({ title: "Help is available", description: "Call 988 for immediate support, no login required", className: "bg-purple-100 text-purple-900 border-purple-200" })}
+              className="text-purple-600 hover:text-purple-700 font-medium text-sm underline-offset-4 hover:underline"
+            >
+              Get help without signing in →
+            </button>
+          </div>
+          
           <p className="text-xs text-muted-foreground">
             You're never alone • Crisis Lifeline: 988 • Emergency: 911
           </p>
@@ -518,9 +528,9 @@ const Auth = () => {
         {showForgotPassword && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
             <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-border/50 max-w-md w-full animate-in slide-in-from-bottom-5 duration-300">
-              <h3 className="text-xl font-semibold mb-4">Reset Your Password</h3>
+              <h3 className="text-xl font-semibold mb-4">Let's Get You Back</h3>
               <p className="text-muted-foreground mb-6">
-                Enter your email and we'll send you a link to create a new password and return to your sanctuary.
+                Recovery includes forgetting passwords sometimes. We'll help you get back to your safe space.
               </p>
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
