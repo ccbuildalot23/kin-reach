@@ -19,8 +19,10 @@ import {
   Users,
   Loader2,
   Search,
+  Send,
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { SendMessageDialog } from "@/components/SendMessageDialog";
 
 interface SupportMember {
   id: string;
@@ -41,6 +43,8 @@ export function SupportNetworkSettings() {
   const [loadingMembers, setLoadingMembers] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBy, setSearchBy] = useState<'phone' | 'email'>('phone');
+  const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const [selectedRecipient, setSelectedRecipient] = useState<{id: string, name: string} | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -360,6 +364,20 @@ export function SupportNetworkSettings() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => {
+                        setSelectedRecipient({
+                          id: member.supporter.user_id,
+                          name: member.supporter.display_name || member.supporter.full_name || 'Unknown User'
+                        });
+                        setMessageDialogOpen(true);
+                      }}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => removeMember(member.id)}
                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
@@ -372,6 +390,13 @@ export function SupportNetworkSettings() {
           )}
         </CardContent>
       </Card>
+      
+      <SendMessageDialog
+        open={messageDialogOpen}
+        onOpenChange={setMessageDialogOpen}
+        recipientId={selectedRecipient?.id}
+        recipientName={selectedRecipient?.name}
+      />
     </div>
   );
 }

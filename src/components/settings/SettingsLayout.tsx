@@ -5,7 +5,11 @@ import { RecoverySettings } from "./RecoverySettings";
 import { NotificationPreferences } from "../notifications/NotificationPreferences";
 import { SupportNetworkSettings } from "./SupportNetworkSettings";
 import { AccountSecurity } from "./AccountSecurity";
-import { User, Shield, Bell, Users, Lock, ArrowLeft, Calendar, Heart, Sparkles } from "lucide-react";
+import { PrivacySettings } from "./PrivacySettings";
+import { AppearanceSettings } from "./AppearanceSettings";
+import { CrisisPreferences } from "./CrisisPreferences";
+import { ResourcesSettings } from "./ResourcesSettings";
+import { User, Shield, Bell, Users, Lock, ArrowLeft, Calendar, Heart, Sparkles, Eye, Palette, AlertTriangle, BookOpen } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { FloatingCrisisButton } from "@/components/FloatingCrisisButton";
 import { Card, CardContent } from "@/components/ui/card";
@@ -84,26 +88,42 @@ export function SettingsLayout() {
         )}
 
         <Tabs defaultValue={defaultTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
-            <TabsTrigger value="recovery" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 gap-2 h-auto p-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <TabsTrigger value="recovery" className="flex items-center gap-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Recovery</span>
             </TabsTrigger>
-            <TabsTrigger value="network" className="flex items-center gap-2">
+            <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700">
               <Users className="h-4 w-4" />
               <span className="hidden sm:inline">Support</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
+            <TabsTrigger value="notifications" className="flex items-center gap-2 data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700">
               <Bell className="h-4 w-4" />
               <span className="hidden sm:inline">Alerts</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
+            <TabsTrigger value="crisis" className="flex items-center gap-2 data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
+              <AlertTriangle className="h-4 w-4" />
+              <span className="hidden sm:inline">Crisis</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="flex items-center gap-2 data-[state=active]:bg-green-100 data-[state=active]:text-green-700">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
+            <TabsTrigger value="privacy" className="flex items-center gap-2 data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-700">
+              <Eye className="h-4 w-4" />
+              <span className="hidden sm:inline">Privacy</span>
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="flex items-center gap-2 data-[state=active]:bg-pink-100 data-[state=active]:text-pink-700">
+              <Palette className="h-4 w-4" />
+              <span className="hidden sm:inline">Theme</span>
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="flex items-center gap-2 data-[state=active]:bg-teal-100 data-[state=active]:text-teal-700">
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">Resources</span>
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700">
               <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">Safety</span>
+              <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
           </TabsList>
 
@@ -119,8 +139,24 @@ export function SettingsLayout() {
             <NotificationPreferences />
           </TabsContent>
 
+          <TabsContent value="crisis">
+            <CrisisPreferences />
+          </TabsContent>
+
           <TabsContent value="profile">
             <ProfileSettings />
+          </TabsContent>
+
+          <TabsContent value="privacy">
+            <PrivacySettings />
+          </TabsContent>
+
+          <TabsContent value="appearance">
+            <AppearanceSettings />
+          </TabsContent>
+
+          <TabsContent value="resources">
+            <ResourcesSettings />
           </TabsContent>
 
           <TabsContent value="security">

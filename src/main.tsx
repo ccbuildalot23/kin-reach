@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import './styles/accessibility.css'
 import { supabase } from "@/integrations/supabase/client";
 
 // Make supabase available in browser console for testing

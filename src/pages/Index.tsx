@@ -15,6 +15,7 @@ import { BreathingExercise } from "@/components/BreathingExercise";
 import { Card, CardContent } from "@/components/ui/card";
 import { format, differenceInDays } from 'date-fns';
 import { cn } from "@/lib/utils";
+import { SendMessageDialog } from "@/components/SendMessageDialog";
 
 interface SupportPerson {
   id: string;
@@ -48,6 +49,7 @@ const Index = () => {
   const [showBreathing, setShowBreathing] = useState(false);
   const [currentMood, setCurrentMood] = useState<string | null>(null);
   const [cleanDate, setCleanDate] = useState<Date | null>(null);
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
 
   // ALL useEffect hooks MUST also be called before any conditional returns
   // Redirect to auth if not authenticated
@@ -429,6 +431,13 @@ const Index = () => {
               <Users className="w-5 h-5 text-blue-600" />
               <span className="text-blue-700 dark:text-blue-400 font-medium">Your Support Team</span>
             </button>
+            <button
+              onClick={() => setShowMessageDialog(true)}
+              className="w-full flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+            >
+              <MessageSquare className="w-5 h-5 text-green-600" />
+              <span className="text-green-700 dark:text-green-400 font-medium">Send Message</span>
+            </button>
           </div>
         </div>
 
@@ -556,6 +565,11 @@ const Index = () => {
           </div>
         </div>
       )}
+      
+      <SendMessageDialog
+        open={showMessageDialog}
+        onOpenChange={setShowMessageDialog}
+      />
     </div>
   );
 };
