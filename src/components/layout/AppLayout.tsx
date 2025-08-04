@@ -14,9 +14,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const showBottomNav = location.pathname !== '/auth' && location.pathname !== '/reset-password';
   
   // Initialize session timeout for authenticated pages
-  if (showBottomNav) {
-    useSessionTimeout();
-  }
+  useSessionTimeout();
   
   return (
     <div className="min-h-screen bg-background">

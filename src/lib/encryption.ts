@@ -271,13 +271,14 @@ export function maskPHI(value: string, type: 'phone' | 'email' | 'text' = 'text'
       }
       return '***-****';
       
-    case 'email':
+    case 'email': {
       // Show first letter and domain: j****@example.com
       const [local, domain] = value.split('@');
       if (local && domain) {
         return `${local[0]}${'*'.repeat(Math.max(4, local.length - 1))}@${domain}`;
       }
       return '****@****';
+    }
       
     case 'text':
     default:
