@@ -161,9 +161,9 @@ export async function encryptObjectPHI<T extends Record<string, any>>(
   for (const field of fields) {
     if (field in encrypted && encrypted[field] && typeof encrypted[field] === 'string') {
       try {
-        encrypted[field] = await encryptPHI(encrypted[field], userKey);
+        (encrypted as any)[field] = await encryptPHI((encrypted as any)[field], userKey);
         // Add encryption marker
-        encrypted[`${field}_encrypted`] = true;
+        (encrypted as any)[`${field}_encrypted`] = true;
       } catch (error) {
         console.error(`Failed to encrypt field ${field}:`, error);
       }
@@ -191,7 +191,7 @@ export async function decryptObjectPHI<T extends Record<string, any>>(
       decrypted[`${field}_encrypted`] === true
     ) {
       try {
-        decrypted[field] = await decryptPHI(decrypted[field], userKey);
+        (decrypted as any)[field] = await decryptPHI((decrypted as any)[field], userKey);
         delete decrypted[`${field}_encrypted`];
       } catch (error) {
         console.error(`Failed to decrypt field ${field}:`, error);

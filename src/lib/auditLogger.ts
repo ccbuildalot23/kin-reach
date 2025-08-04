@@ -22,13 +22,14 @@ interface AuditLogEntry {
   userId?: string;
   eventType: AuditEventType;
   action: string;
-  outcome: AuditOutcome;
+  outcome?: AuditOutcome;
   ipAddress?: string;
   userAgent?: string;
   deviceInfo?: Record<string, any>;
   sessionId?: string;
   errorMessage?: string;
-  additionalData?: Record<string, any>;
+  details?: Record<string, any>;
+  riskLevel?: string;
 }
 
 class AuditLogger {
@@ -52,7 +53,6 @@ class AuditLogger {
     // Basic device detection
     const isMobile = /Mobile|Android|iPhone|iPad/i.test(userAgent);
     const isTablet = /iPad|Android(?!.*Mobile)/i.test(userAgent);
-    const isDesktop = !isMobile && !isTablet;
     
     // Browser detection
     let browser = 'Unknown';
@@ -72,40 +72,34 @@ class AuditLogger {
     };
   }
 
-  private async getIpAddress(): Promise<string | null> {
-    try {
-      // In production, this would be handled server-side
-      // For now, we'll return a placeholder
-      return null;
-    } catch (error) {
-      console.error('Failed to get IP address:', error);
-      return null;
-    }
-  }
-
   async log(entry: AuditLogEntry): Promise<void> {
     try {
-      const ipAddress = entry.ipAddress || await this.getIpAddress();
       const userAgent = entry.userAgent || navigator.userAgent;
       const deviceInfo = entry.deviceInfo || this.getDeviceInfo();
       
       // Get current session if available
       const { data: { session } } = await supabase.auth.getSession();
-      const userId = entry.userId || session?.user?.id || null;
-      
-      // Call the database function to log the event
-      const { error } = await supabase.rpc('log_auth_event', {
-        p_user_id: userId,
-        p_event_type: entry.eventType,
-        p_action: entry.action,
-        p_outcome: entry.outcome,
-        p_ip_address: ipAddress,
-        p_user_agent: userAgent,
-        p_device_info: deviceInfo,
-        p_session_id: entry.sessionId || session?.access_token?.substring(0, 20),
-        p_error_message: entry.errorMessage,
-        p_additional_data: entry.additionalData,
-      });
+      const userId = entry.userId || session?.user?.id;
+
+      // Log directly to audit_logs table
+      const { error } = await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: userId,
+          action: entry.action,
+          details_encrypted: JSON.stringify({
+            event_type: entry.eventType,
+            outcome: entry.outcome,
+            details: entry.details || {},
+            risk_level: entry.riskLevel || 'low',
+            device_info: deviceInfo,
+            error_message: entry.errorMessage,
+            session_id: entry.sessionId || session?.access_token?.substring(0, 20)
+          }),
+          timestamp: new Date().toISOString(),
+          user_agent: userAgent,
+          ip_address: entry.ipAddress
+        });
 
       if (error) {
         console.error('Failed to log audit event:', error);
@@ -121,7 +115,7 @@ class AuditLogger {
       eventType: 'AUTH_LOGIN_ATTEMPT',
       action: 'User attempted to log in',
       outcome: 'PENDING',
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -131,7 +125,7 @@ class AuditLogger {
       eventType: 'AUTH_LOGIN_SUCCESS',
       action: 'User successfully logged in',
       outcome: 'SUCCESS',
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -141,7 +135,7 @@ class AuditLogger {
       action: 'Login attempt failed',
       outcome: 'FAILURE',
       errorMessage,
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -150,7 +144,7 @@ class AuditLogger {
       eventType: 'AUTH_SIGNUP_ATTEMPT',
       action: 'User attempted to sign up',
       outcome: 'PENDING',
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -160,7 +154,7 @@ class AuditLogger {
       eventType: 'AUTH_SIGNUP_SUCCESS',
       action: 'User successfully signed up',
       outcome: 'SUCCESS',
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -170,7 +164,7 @@ class AuditLogger {
       action: 'Signup attempt failed',
       outcome: 'FAILURE',
       errorMessage,
-      additionalData: { email },
+      details: { email },
     });
   }
 
@@ -179,7 +173,7 @@ class AuditLogger {
       eventType: 'AUTH_PASSWORD_RESET_REQUEST',
       action: 'Password reset requested',
       outcome: 'SUCCESS',
-      additionalData: { email },
+      details: { email },
     });
   }
 

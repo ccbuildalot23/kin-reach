@@ -547,7 +547,7 @@ const Index = () => {
                     <Icon className="w-8 h-8" />
                     <div className="text-left">
                       <h3 className="text-lg font-semibold">{mode.label}</h3>
-                      <p className="text-sm opacity-90">{mode.description}</p>
+                      <p className="text-sm opacity-90">{mode.encouragement}</p>
                     </div>
                   </div>
                 </button>

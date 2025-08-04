@@ -23,7 +23,8 @@ import {
   Loader2,
   Camera,
   AlertCircle,
-  Check
+  Check,
+  Sparkles
 } from 'lucide-react';
 import { format } from 'date-fns';
 

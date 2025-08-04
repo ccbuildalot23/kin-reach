@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { auditLogger } from '@/lib/auditLogger';
 import { Lock, Sparkles, CheckCircle, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -172,7 +173,7 @@ const ResetPassword = () => {
                 <div className="space-y-2 mt-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Password strength:</span>
-                    <span className={"font-medium " + passwordStrength >= 5 ? 'text-green-600' : 'text-muted-foreground' + ""}>
+                    <span className={cn("font-medium", passwordStrength >= 5 ? 'text-green-600' : 'text-muted-foreground')}>
                       {getStrengthText()}
                     </span>
                   </div>
